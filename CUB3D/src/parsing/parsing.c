@@ -5,24 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: huburton <huburton@student.s19.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/19 14:57:04 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/19 14:57:04 by huburton         ###   ########.fr       */
+/*   Created: 2026/02/23 15:43:09 by huburton          #+#    #+#             */
+/*   Updated: 2026/02/23 15:43:09 by huburton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
-
-void	ft_putstr_fd(char *s, int fd)
-{
-	int	i;
-
-	i = 0;
-	if (!s)
-		return ;
-	while (s[i])
-		i++;
-	write(fd, s, i);
-}
 
 int	check_extension(char *filename)
 {
@@ -52,21 +40,45 @@ int	check_args(int argc, char **argv)
 	return (0);
 }
 
-int	parse_map(char *filename, t_data *data)
+static int	check_parse_step(int result, void *lines_ptr, char *err_msg)
 {
-	int	fd;
+	char	**lines;
 
-	(void)data;
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
+	if (result != 0)
 	{
-		perror("Error\nCannot open file");
+		ft_putstr_fd("Error\n", 2);
+		ft_putstr_fd(err_msg, 2);
+		ft_putstr_fd("\n", 2);
+		if (lines_ptr)
+		{
+			lines = (char **)lines_ptr;
+			free_split(lines);
+		}
 		return (1);
 	}
-	// TODO: Lire le fichier avec get_next_line
-	// TODO: Parser les textures (NO, SO, WE, EA)
-	// TODO: Parser les couleurs (F, C)
-	// TODO: Parser la map (1, 0, N, S, E, W)
-	close(fd);
+	return (0);
+}
+
+int	parse_map(char *filename, t_data *data)
+{
+	char	**lines;
+	int		map_start_idx;
+
+	lines = read_file_lines(filename);
+	if (!lines)
+	{
+		ft_putstr_fd("Error\nCannot read file\n", 2);
+		return (1);
+	}
+	if (check_parse_step(extract_elements(lines, data, &map_start_idx),
+			lines, "Invalid elements in map file"))
+		return (1);
+	if (check_parse_step(extract_grid(lines, data, map_start_idx),
+			lines, "Invalid map grid"))
+		return (1);
+	if (check_parse_step(validate_map(data),
+			lines, "Map is not closed or invalid"))
+		return (1);
+	free_split(lines);
 	return (0);
 }

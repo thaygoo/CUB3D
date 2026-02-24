@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: huburton <huburton@student.s19.fr>         +#+  +:+       +#+        */
+/*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/23 15:43:41 by huburton         ###   ########.fr       */
+/*   Updated: 2026/02/24 21:12:57 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <math.h>
-# include "libft.h"
+# include "../src/libft/libft.h"
+# include "../src/minilibx-linux/mlx.h"
 
 typedef struct s_map
 {
@@ -41,6 +42,7 @@ typedef struct s_data
 	t_map	map;
 	void	*mlx_ptr;
 	void	*win_ptr;
+	void	*img_ptr;
 }	t_data;
 
 int		check_args(int argc, char **argv);

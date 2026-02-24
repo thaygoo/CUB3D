@@ -1,14 +1,17 @@
 NAME		= cub3D
 
 CC			= cc
-
 CFLAGS		= -Wall -Wextra -Werror
 
 SRC_DIR		= src
-
 INC_DIR		= inc
-
 OBJ_DIR		= obj
+
+MLX_DIR		= $(SRC_DIR)/minilibx-linux
+MLX			= $(MLX_DIR)/libmlx.a
+
+LIBFT_DIR	= $(SRC_DIR)/libft
+LIBFT		= $(LIBFT_DIR)/libft.a
 
 SRCS		= $(SRC_DIR)/main.c \
 			  $(SRC_DIR)/parsing/parsing.c \
@@ -21,18 +24,20 @@ SRCS		= $(SRC_DIR)/main.c \
 
 OBJS		= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-LIBFT_DIR	= $(SRC_DIR)/libft
-LIBFT		= $(LIBFT_DIR)/libft.a
+INCLUDES	= -I $(INC_DIR) -I $(LIBFT_DIR) -I $(MLX_DIR)
 
-INCLUDES	= -I $(INC_DIR) -I $(LIBFT_DIR)
+MLX_FLAGS	= -L $(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
-all: $(LIBFT) $(NAME)
+all: $(LIBFT) $(MLX) $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 
-$(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+$(MLX):
+	$(MAKE) -C $(MLX_DIR)
+
+$(NAME): $(OBJS) $(LIBFT) $(MLX)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
@@ -41,6 +46,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 clean:
 	rm -rf $(OBJ_DIR)
 	$(MAKE) -C $(LIBFT_DIR) clean
+	$(MAKE) -C $(MLX_DIR) clean
 
 fclean: clean
 	rm -f $(NAME)
@@ -49,3 +55,56 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
+
+# NAME		= cub3D
+
+# CC			= cc
+
+# CFLAGS		= -Wall -Wextra -Werror
+
+# SRC_DIR		= src
+
+# INC_DIR		= inc
+
+# OBJ_DIR		= obj
+
+# SRCS		= $(SRC_DIR)/main.c \
+# 			  $(SRC_DIR)/parsing/parsing.c \
+# 			  $(SRC_DIR)/parsing/read_file.c \
+# 			  $(SRC_DIR)/parsing/parse_elements.c \
+# 			  $(SRC_DIR)/parsing/parse_map.c \
+# 			  $(SRC_DIR)/parsing/check_map.c \
+# 			  $(SRC_DIR)/parsing/find_player.c \
+# 			  $(SRC_DIR)/utils/utils.c
+
+# OBJS		= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+# LIBFT_DIR	= $(SRC_DIR)/libft
+# LIBFT		= $(LIBFT_DIR)/libft.a
+
+# INCLUDES	= -I $(INC_DIR) -I $(LIBFT_DIR)
+
+# all: $(LIBFT) $(NAME)
+
+# $(LIBFT):
+# 	$(MAKE) -C $(LIBFT_DIR)
+
+# $(NAME): $(OBJS) $(LIBFT)
+# 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+
+# $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+# 	@mkdir -p $(dir $@)
+# 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# clean:
+# 	rm -rf $(OBJ_DIR)
+# 	$(MAKE) -C $(LIBFT_DIR) clean
+
+# fclean: clean
+# 	rm -f $(NAME)
+# 	$(MAKE) -C $(LIBFT_DIR) fclean
+
+# re: fclean all
+
+# .PHONY: all clean fclean re

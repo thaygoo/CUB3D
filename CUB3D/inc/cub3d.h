@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/25 18:50:28 by msochor          ###   ########.fr       */
+/*   Updated: 2026/02/25 20:34:32 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@
 # include "../src/libft/libft.h"
 # include "../src/minilibx-linux/mlx.h"
 
-# define WIDTH 1024
-# define HEIGHT 512
+# define WIDTH	1025
+# define HEIGHT	513
+# define BLOCK	64
 
 # define W 119
 # define A 97
@@ -59,6 +60,8 @@ typedef struct s_player
 	bool	key_A;
 	bool	key_S;
 	bool	key_D;
+	bool	key_left;
+	bool	key_right;
 }	t_player;
 
 typedef struct s_data

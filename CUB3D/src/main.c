@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/25 19:00:06 by msochor          ###   ########.fr       */
+/*   Updated: 2026/02/25 22:06:07 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	init_game(t_data *data)
 	data->mlx_ptr = mlx_init();
 	data->win_ptr = mlx_new_window(data->mlx_ptr, WIDTH, HEIGHT, "cub3d");
 	data->img_ptr = mlx_new_image(data->mlx_ptr, WIDTH, HEIGHT);
-	data->addr = mlx_get_data_addr(data->img_ptr, &data->bit_per_pixel,
-			&data->size_line, &data->endian);
+	// data->addr = mlx_get_data_addr(data->img_ptr, &data->bit_per_pixel,
+	// 		&data->size_line, &data->endian);
 	// init_player(data);
 }
 
@@ -46,11 +46,13 @@ void	init_player(t_data *data)
 {
 	data->player.x = WIDTH / 2;
 	data->player.y = HEIGHT / 2;
-	data->player.angle = 0;
+	data->player.angle = 3 * PI / 2;
 	data->player.key_W = false;
 	data->player.key_A = false;
 	data->player.key_S = false;
 	data->player.key_D = false;
+	data->player.key_left = false;
+	data->player.key_right = false;
 }
 
 void	put_pixel(t_data *data, int x, int y, int color)
@@ -88,6 +90,7 @@ int	key_press(int keycode, t_data *data)
 		printf("W pressed\n");
 		printf("player x: %f\n", data->player.x);
 		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
 	}
 	if (keycode == A)
 	{
@@ -95,6 +98,7 @@ int	key_press(int keycode, t_data *data)
 		printf("A pressed\n");
 		printf("player x: %f\n", data->player.x);
 		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
 	}
 	if (keycode == S)
 	{
@@ -102,6 +106,7 @@ int	key_press(int keycode, t_data *data)
 		printf("S pressed\n");
 		printf("player x: %f\n", data->player.x);
 		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
 	}
 	if (keycode == D)
 	{
@@ -109,6 +114,23 @@ int	key_press(int keycode, t_data *data)
 		printf("D pressed\n");
 		printf("player x: %f\n", data->player.x);
 		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
+	}
+	if (keycode == LEFT)
+	{
+		data->player.key_left = true;
+		printf("LEFT pressed\n");
+		printf("player x: %f\n", data->player.x);
+		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
+	}
+	if (keycode == RIGHT)
+	{
+		data->player.key_right = true;
+		printf("LEFT pressed\n");
+		printf("player x: %f\n", data->player.x);
+		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
 	}
 	return (0);
 }
@@ -121,6 +143,7 @@ int	key_release(int keycode, t_data *data)
 		printf("W released\n");
 		printf("player x: %f\n", data->player.x);
 		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
 	}
 	if (keycode == A)
 	{
@@ -128,6 +151,7 @@ int	key_release(int keycode, t_data *data)
 		printf("A released\n");
 		printf("player x: %f\n", data->player.x);
 		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
 	}
 	if (keycode == S)
 	{
@@ -135,6 +159,7 @@ int	key_release(int keycode, t_data *data)
 		printf("S released\n");
 		printf("player x: %f\n", data->player.x);
 		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
 	}
 	if (keycode == D)
 	{
@@ -142,29 +167,149 @@ int	key_release(int keycode, t_data *data)
 		printf("D released\n");
 		printf("player x: %f\n", data->player.x);
 		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
+	}
+		if (keycode == LEFT)
+	{
+		data->player.key_left = false;
+		printf("LEFT released\n");
+		printf("player x: %f\n", data->player.x);
+		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
+	}
+	if (keycode == RIGHT)
+	{
+		data->player.key_right = false;
+		printf("LEFT released\n");
+		printf("player x: %f\n", data->player.x);
+		printf("player y: %f\n", data->player.y);
+		printf("player ANGLE: %f\n", data->player.angle);
 	}
 	return (0);
 }
 
 void	move_player(t_data *data)
 {
-	float	step;
+	int		step;
+	float	angle_speed;
+	float	cos_angle;
+	float	sin_angle;
 
-	step = 0.1;
+	
+	step = 1;
+	angle_speed = 0.01;
+	if(data->player.key_left)
+		data->player.angle -= angle_speed;
+	if(data->player.key_right)
+		data->player.angle += angle_speed;
+	if (data->player.angle > 2 * PI)
+		data->player.angle = 0;
+	if (data->player.angle < 0)
+		data->player.angle = 2 * PI;
+	cos_angle = cos(data->player.angle);
+	sin_angle = sin(data->player.angle);
+	// if (data->player.key_W)
+	// {
+	// 	if (data->player.y - step >= 0)
+	// 		data->player.y -= step;
+	// }
+	// if (data->player.key_S)
+	// {
+	// 	if (data->player.y + step <= HEIGHT)
+	// 		data->player.y += step;
+	// }
+	// if (data->player.key_A)
+	// {
+	// 	if (data->player.x - step >= 0)
+	// 		data->player.x -= step;
+	// }
+	// if (data->player.key_D)
+	// {
+	// 	if (data->player.x + step <= WIDTH)
+	// 		data->player.x += step;
+	// }
 	if (data->player.key_W)
-		data->player.y -= step;
+	{
+		data->player.x += cos_angle * step;
+		data->player.y += sin_angle * step;
+	}
 	if (data->player.key_S)
-		data->player.y += step;
+	{
+		data->player.x -= cos_angle * step;
+		data->player.y -= sin_angle * step;
+	}
 	if (data->player.key_A)
-		data->player.x -= step;
+	{
+		data->player.x += sin_angle * step;
+		data->player.y -= cos_angle * step;
+	}
 	if (data->player.key_D)
-		data->player.x += step;
+	{
+		data->player.x -= sin_angle * step;
+		data->player.y += cos_angle * step;
+	}
 }
 
+void	draw_map(t_data *data)
+{
+	char	**grid;
+	int		color;
+	int		x;
+	int		y;
+	
+	
+	color = 0xFFFFFF;
+	grid = data->map.grid;
+	y = 0;
+	while (grid[y])
+	{
+		x = 0;
+		while (grid[y][x])
+		{
+			if (grid[y][x] == '1')
+				draw_square(data, x * BLOCK, y * BLOCK, color, BLOCK);
+			x++; 
+		}
+		y++;
+	}	
+}
+// void clear_image(t_data *data)
+// {
+// 	ft_memset(data->addr, 0, HEIGHT * data->size_line);
+// }
+bool	touch(float px, float py, t_data *data)
+{
+	int	x;
+	int	y; 
+
+	x = px / BLOCK;
+	y = py / BLOCK;
+	if (data->map.grid[y][x] == '1')
+		return (true);
+	return (false);
+}
 int	draw_loop(t_data *data)
 {
+	mlx_destroy_image(data->mlx_ptr, data->img_ptr);
+	data->img_ptr = mlx_new_image(data->mlx_ptr, WIDTH, HEIGHT);
+	data->addr = mlx_get_data_addr(data->img_ptr, &data->bit_per_pixel,
+			&data->size_line, &data->endian);
+	// clear_image(data);
 	move_player(data);
-	draw_square(data, data->player.x, data->player.y, 0x00FF00, 10);
+	draw_square(data, data->player.x - 5, data->player.y - 5, 0x00FF00, 10);
+	draw_map(data);
+	
+	float	ray_x = data->player.x;
+	float	ray_y = data->player.y;
+	float	cos_angle = cos(data->player.angle);
+	float	sin_angle = sin(data->player.angle);
+
+	while (!touch(ray_x, ray_y, data))
+	{
+		put_pixel(data, ray_x, ray_y, 0xFF0000);
+		ray_x += cos_angle;
+		ray_y += sin_angle;
+	}
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
 	return (0);	
 }

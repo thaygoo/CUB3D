@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/24 21:12:57 by msochor          ###   ########.fr       */
+/*   Updated: 2026/02/25 18:50:28 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,21 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <math.h>
+# include <stdbool.h>
 # include "../src/libft/libft.h"
 # include "../src/minilibx-linux/mlx.h"
+
+# define WIDTH 1024
+# define HEIGHT 512
+
+# define W 119
+# define A 97
+# define S 115
+# define D 100
+# define LEFT 65361
+# define RIGHT 65363
+
+# define PI 3.14159265359
 
 typedef struct s_map
 {
@@ -37,12 +50,28 @@ typedef struct s_map
 	char	player_dir;
 }	t_map;
 
+typedef struct s_player
+{
+	float	x;
+	float	y;
+	float	angle;
+	bool	key_W;
+	bool	key_A;
+	bool	key_S;
+	bool	key_D;
+}	t_player;
+
 typedef struct s_data
 {
-	t_map	map;
-	void	*mlx_ptr;
-	void	*win_ptr;
-	void	*img_ptr;
+	t_map		map;
+	t_player	player;
+	void		*mlx_ptr;
+	void		*win_ptr;
+	void		*img_ptr;
+	char		*addr;
+	int			bit_per_pixel;
+	int			size_line;
+	int			endian;
 }	t_data;
 
 int		check_args(int argc, char **argv);

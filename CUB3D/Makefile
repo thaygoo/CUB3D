@@ -20,7 +20,10 @@ SRCS		= $(SRC_DIR)/main.c \
 			  $(SRC_DIR)/parsing/parse_map.c \
 			  $(SRC_DIR)/parsing/check_map.c \
 			  $(SRC_DIR)/parsing/find_player.c \
-			  $(SRC_DIR)/utils/utils.c
+			  $(SRC_DIR)/utils/utils.c \
+			  $(SRC_DIR)/draw.c \
+			  $(SRC_DIR)/hooks.c \
+			  $(SRC_DIR)/player.c
 
 OBJS		= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

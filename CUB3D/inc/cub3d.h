@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/25 20:34:32 by msochor          ###   ########.fr       */
+/*   Updated: 2026/02/26 19:34:59 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ typedef struct s_player
 	float	x;
 	float	y;
 	float	angle;
+	float	step;
+	float	angle_speed;
 	bool	key_W;
 	bool	key_A;
 	bool	key_S;
@@ -67,7 +69,7 @@ typedef struct s_player
 typedef struct s_data
 {
 	t_map		map;
-	t_player	player;
+	t_player	p;
 	void		*mlx_ptr;
 	void		*win_ptr;
 	void		*img_ptr;
@@ -89,5 +91,18 @@ int		find_player(t_data *data);
 void	free_data(t_data *data);
 void	free_split(char **split);
 int		is_whitespace(char c);
+
+void	put_pixel(t_data *data, int x, int y, int color);
+void	draw_circle(t_data *data, int cx, int cy, int r);
+void	draw_square(t_data *data, int x, int y, int size);
+void	draw_map(t_data *data);
+bool	touch(float px, float py, t_data *data);
+void	cast_ray(t_data *data);
+
+int		key_press(int keycode, t_data *data);
+int		key_release(int keycode, t_data *data);
+int		key_press_debug(int keycode, t_data *data);
+int		key_release_debug(int keycode, t_data *data);
+void	move_player(t_data *data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 17:59:01 by msochor           #+#    #+#             */
-/*   Updated: 2026/02/26 19:34:36 by msochor          ###   ########.fr       */
+/*   Updated: 2026/02/26 20:21:22 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,21 +94,64 @@ bool	touch(float px, float py, t_data *data)
 	return (false);
 }
 
+// void	cast_ray(t_data *data)
+// {
+// 	float	ray_x;
+// 	float	ray_y;
+// 	float	cos_angle;
+// 	float	sin_angle;
+
+// 	ray_x = data->p.x;
+// 	ray_y = data->p.y;
+// 	cos_angle = cos(data->p.angle);
+// 	sin_angle = sin(data->p.angle);
+// 	while (!touch(ray_x, ray_y, data))
+// 	{
+// 		put_pixel(data, ray_x, ray_y, 0xFF0000);
+// 		ray_x += cos_angle;
+// 		ray_y += sin_angle;
+// 	}
+// }
+
 void	cast_ray(t_data *data)
 {
 	float	ray_x;
 	float	ray_y;
 	float	cos_angle;
 	float	sin_angle;
-
-	ray_x = data->p.x;
-	ray_y = data->p.y;
-	cos_angle = cos(data->p.angle);
-	sin_angle = sin(data->p.angle);
-	while (!touch(ray_x, ray_y, data))
+	float	ray_w;
+	
+	ray_w = 2;
+	float i = 0;
+	
+	
+	while (i < ray_w)
 	{
-		put_pixel(data, ray_x, ray_y, 0xFF0000);
-		ray_x += cos_angle;
-		ray_y += sin_angle;
+		ray_x = data->p.x;
+		ray_y = data->p.y;
+		cos_angle = cos(data->p.angle - i / PI);
+		sin_angle = sin(data->p.angle - i / PI);
+		while (!touch(ray_x, ray_y, data))
+		{
+			put_pixel(data, ray_x, ray_y, 0xFF0000);
+			ray_x += cos_angle;
+			ray_y += sin_angle;
+		}
+		i += 0.05;
+	}
+	i = 0;
+	while (i < ray_w)
+	{
+		ray_x = data->p.x;
+		ray_y = data->p.y;
+		cos_angle = cos(data->p.angle + i / PI);
+		sin_angle = sin(data->p.angle + i / PI);
+		while (!touch(ray_x, ray_y, data))
+		{
+			put_pixel(data, ray_x, ray_y, 0x0000FF);
+			ray_x += cos_angle;
+			ray_y += sin_angle;
+		}
+		i += 0.05;
 	}
 }

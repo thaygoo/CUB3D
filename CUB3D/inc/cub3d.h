@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/26 19:34:59 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/04 21:29:04 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ typedef struct s_map
 }	t_map;
 
 typedef struct s_player
-{
+{	
+	int		radius;
 	float	x;
 	float	y;
 	float	angle;

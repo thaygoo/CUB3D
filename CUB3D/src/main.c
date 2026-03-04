@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/26 19:35:08 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/04 20:44:08 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ void	init_game(t_data *data)
 }
 
 void	init_player(t_data *data)
-{
+{	
+	data->p.radius = 16;
 	data->p.x = WIDTH / 2;
 	data->p.y = HEIGHT / 2;
 	data->p.angle = 3 * PI / 2;
@@ -70,7 +71,7 @@ int	draw_loop(t_data *data)
 			&data->size_line, &data->endian);
 	// clear_image(data);
 	draw_map(data);
-	draw_circle(data, data->p.x, data->p.y, 10);
+	draw_circle(data, data->p.x, data->p.y, data->p.radius);
 	move_player(data);
 	cast_ray(data);
 	// draw_square(data, data->p.x -5, data->p.y -5, 10, 0x00FF00);
@@ -92,8 +93,8 @@ int	main(int argc, char **argv)
 	init_game(&data);
 	init_player(&data);
 	
-	mlx_hook(data.win_ptr, 2, 1L<<0, key_press_debug, &data);
-	mlx_hook(data.win_ptr, 3, 1L<<1, key_release_debug, &data);
+	mlx_hook(data.win_ptr, 2, 1L<<0, key_press, &data);
+	mlx_hook(data.win_ptr, 3, 1L<<1, key_release, &data);
 	mlx_loop_hook(data.mlx_ptr, draw_loop, &data);
 
 

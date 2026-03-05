@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/05 18:13:02 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/05 19:13:06 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	init_data(t_data *data)
 	data->map.floor_color[0] = -1;
 	data->map.floor_color[1] = -1;
 	data->map.floor_color[2] = -1;
-	data->map.ceiling_color[0] = -1;
+	data->map.ceiling_color[0] = -1;	// data->p.angle_speed = 0.01;
 	data->map.ceiling_color[1] = -1;
 	data->map.ceiling_color[2] = -1;
 	data->map.player_x = -1;
@@ -45,11 +45,10 @@ void	init_game(t_data *data)
 void	init_player(t_data *data)
 {	
 	data->p.radius = 8;
-	data->p.x = 80;
-	data->p.y = 80;
+	data->p.x = data->map.player_x * BLOCK + BLOCK/2;
+	data->p.y = data->map.player_y * BLOCK + BLOCK/2;
 	data->p.angle = PI * 1 / 3;
 	data->p.step = 1;
-	// data->p.angle_speed = 0.01;
 	data->p.angle_speed = 2 * PI / 360;
 	data->p.key_W = false;
 	data->p.key_A = false;
@@ -61,6 +60,14 @@ void	init_player(t_data *data)
 	data->p.right = 0;
 	data->p.top = 0;
 	data->p.bottom = 0;
+	if (data->map.player_dir == 'N')
+		data->p.angle = PI * 3/2;
+	else if (data->map.player_dir == 'S')
+		data->p.angle = PI * 1/2;
+	else if (data->map.player_dir == 'E')
+		data->p.angle = 0;
+	else if (data->map.player_dir == 'W')
+		data->p.angle = PI;
 }
 
 // void clear_image(t_data *data)
@@ -94,7 +101,8 @@ int	main(int argc, char **argv)
 	if (parse_map(argv[1], &data) != 0)
 		return (1);
 	printf("Success: Map loaded\n");
-	
+	printf("player position: %d %d\n", data.map.player_x, data.map.player_y);
+	printf("player dir: %c\n", data.map.player_dir);
 	init_game(&data);
 	init_player(&data);
 	

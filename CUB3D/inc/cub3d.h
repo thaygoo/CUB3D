@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/04 21:29:04 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/05 14:11:55 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,26 @@ typedef struct s_player
 	bool	key_left;
 	bool	key_right;
 }	t_player;
+
+typedef struct s_ray
+{
+	float	px;
+	float	py;
+	float	dx;
+	float	dy;
+	int		mapX;
+	int		mapY;
+	float	deltaDistX;
+	float	deltaDistY;
+	int		stepX;
+	int		stepY;
+	float	sideDistX;
+	float	sideDistY;
+	float	dist;
+	float	hitX;
+	float	hitY;
+	int		side;
+}	t_ray;
 
 typedef struct s_data
 {

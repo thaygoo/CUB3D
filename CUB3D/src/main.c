@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/05 13:40:57 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/05 15:34:17 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,12 @@ void	init_player(t_data *data)
 	data->p.key_D = false;
 	data->p.key_left = false;
 	data->p.key_right = false;
+	data->p.left = 0;
+	data->p.right = 0;
+	data->p.top = 0;
+	data->p.bottom = 0;
+	
+	
 }
 
 // void clear_image(t_data *data)
@@ -74,7 +80,6 @@ int	draw_loop(t_data *data)
 	draw_circle(data, data->p.x, data->p.y, data->p.radius);
 	move_player(data);
 	cast_ray(data);
-	// draw_square(data, data->p.x -5, data->p.y -5, 10, 0x00FF00);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
 	return (0);	
 }
@@ -96,7 +101,6 @@ int	main(int argc, char **argv)
 	mlx_hook(data.win_ptr, 2, 1L<<0, key_press, &data);
 	mlx_hook(data.win_ptr, 3, 1L<<1, key_release, &data);
 	mlx_loop_hook(data.mlx_ptr, draw_loop, &data);
-
 
 	// mlx_put_image_to_window(data.mlx_ptr, data.win_ptr, data.img_ptr, 0, 0);
 	mlx_loop(data.mlx_ptr);

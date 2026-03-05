@@ -22,6 +22,7 @@ SRCS		= $(SRC_DIR)/main.c \
 			  $(SRC_DIR)/parsing/find_player.c \
 			  $(SRC_DIR)/utils/utils.c \
 			  $(SRC_DIR)/draw.c \
+			  $(SRC_DIR)/ray.c \
 			  $(SRC_DIR)/hooks.c \
 			  $(SRC_DIR)/player.c
 

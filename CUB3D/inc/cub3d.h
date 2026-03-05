@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/05 17:40:46 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/05 18:18:35 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include "../src/minilibx-linux/mlx.h"
 
 # define WIDTH	1024
-# define HEIGHT	1024
+# define HEIGHT	512
 # define BLOCK	64
 
 # define W 119

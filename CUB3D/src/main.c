@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/05 17:42:33 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/05 18:13:02 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ void	init_game(t_data *data)
 void	init_player(t_data *data)
 {	
 	data->p.radius = 8;
-	data->p.x = WIDTH / 2;
-	data->p.y = HEIGHT / 3;
-	data->p.angle = 3 * PI / 2;
+	data->p.x = 80;
+	data->p.y = 80;
+	data->p.angle = PI * 1 / 3;
 	data->p.step = 1;
 	// data->p.angle_speed = 0.01;
 	data->p.angle_speed = 2 * PI / 360;

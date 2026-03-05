@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:04:35 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/05 15:26:16 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/05 17:45:18 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,12 @@ void	init_ray_zero(t_ray *r)
 	r->side = -1;
 }
 
-void	set_ray_one(t_ray *r, t_data *data)
+void	set_ray_one(t_ray *r, t_data *data, float angle)
 {
 	r->px = data->p.x / BLOCK;
 	r->py = data->p.y / BLOCK;
-	r->dx = cos(data->p.angle);
-	r->dy = sin(data->p.angle);
+	r->dx = cos(angle);
+	r->dy = sin(angle);
 	r->mapX = (int)r->px;
 	r->mapY = (int)r->py;
 	r->deltaDistX = fabs(1.0f / r->dx);
@@ -83,10 +83,10 @@ void	set_ray_two(t_ray *r)
 	}
 }
 
-void	ray_init_set(t_ray *ray, t_data *data)
+void	ray_init_set(t_ray *ray, t_data *data, float angle)
 {
 	init_ray_zero(ray);
-	set_ray_one(ray, data);
+	set_ray_one(ray, data, angle);
 	set_ray_two(ray);
 }
 
@@ -109,12 +109,13 @@ void	ray_hitlookup(t_ray *r, t_data *data)
 			r->mapY += r->stepY;
 			r->side = 1;
 		}
+		// if (data->map.grid[r->mapY][r->mapX] == '1')
 		if (data->map.grid[r->mapY][r->mapX] == '1')
 			hit = 1;
 	}
 }
 
-void	ray_cast(t_ray *ray, t_data *data)
+void	ray_cast(t_ray *ray, t_data *data, int color)
 {
 	if (ray->side == 0)
 		ray->dist = ray->sideDistX - ray->deltaDistX;
@@ -123,14 +124,33 @@ void	ray_cast(t_ray *ray, t_data *data)
 	ray->hitX = data->p.x + ray->dx * ray->dist * BLOCK;
 	ray->hitY = data->p.y + ray->dy * ray->dist * BLOCK;
 	// draw_line(data, data->p.x, data->p.y, ray->hitX, ray->hitY, 0xFFFF00);
-	draw_ray_line(data, ray->hitX, ray->hitY, 0xFFFF00);
+	draw_ray_line(data, ray->hitX, ray->hitY, color);
 }
 
-void	cast_ray(t_data *data)
+void	cast_ray(t_data *data, float angle, int color)
 {
 	t_ray	ray;
 
-	ray_init_set(&ray, data);
+	ray_init_set(&ray, data, angle);
 	ray_hitlookup(&ray, data);
-	ray_cast(&ray, data);
+	ray_cast(&ray, data, color);
+}
+
+void	cast_rays(t_data *data, int fov)
+{
+	int	i;
+
+	cast_ray(data, data->p.angle, 0xFFFF00);
+	i = 1;
+	while (i <= fov / 2)
+	{
+		cast_ray(data, data->p.angle + i * data->p.angle_speed, 0xFF0000);
+		i++;
+	}
+	i = 1;
+	while (i <= fov / 2)
+	{
+		cast_ray(data, data->p.angle - i * data->p.angle_speed, 0xFF0000);
+		i++;
+	}
 }

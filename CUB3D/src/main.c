@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/05 15:34:17 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/05 17:42:33 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,11 @@ void	init_player(t_data *data)
 {	
 	data->p.radius = 8;
 	data->p.x = WIDTH / 2;
-	data->p.y = HEIGHT / 2;
+	data->p.y = HEIGHT / 3;
 	data->p.angle = 3 * PI / 2;
 	data->p.step = 1;
-	data->p.angle_speed = 0.01;
+	// data->p.angle_speed = 0.01;
+	data->p.angle_speed = 2 * PI / 360;
 	data->p.key_W = false;
 	data->p.key_A = false;
 	data->p.key_S = false;
@@ -60,8 +61,6 @@ void	init_player(t_data *data)
 	data->p.right = 0;
 	data->p.top = 0;
 	data->p.bottom = 0;
-	
-	
 }
 
 // void clear_image(t_data *data)
@@ -79,7 +78,8 @@ int	draw_loop(t_data *data)
 	draw_map(data);
 	draw_circle(data, data->p.x, data->p.y, data->p.radius);
 	move_player(data);
-	cast_ray(data);
+	// cast_ray(data, data->p.angle);
+	cast_rays(data, 60);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
 	return (0);	
 }

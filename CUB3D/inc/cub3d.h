@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/05 15:32:14 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/05 17:40:46 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include "../src/libft/libft.h"
 # include "../src/minilibx-linux/mlx.h"
 
-# define WIDTH	1025
-# define HEIGHT	513
+# define WIDTH	1024
+# define HEIGHT	1024
 # define BLOCK	64
 
 # define W 119
@@ -33,7 +33,7 @@
 # define LEFT 65361
 # define RIGHT 65363
 
-# define PI 3.14159265359
+# define PI 3.14159265359f
 
 typedef struct s_map
 {
@@ -133,7 +133,8 @@ void	draw_map(t_data *data);
 // void	draw_line(t_data *data, float x0, float y0, float x1, float y1, int color);
 void	draw_ray_line(t_data *data, float x1, float y1, int color);
 bool	touch(float px, float py, t_data *data);
-void	cast_ray(t_data *data);
+void	cast_ray(t_data *data, float angle, int color);
+void	cast_rays(t_data *data, int fov);
 
 int		key_press(int keycode, t_data *data);
 int		key_release(int keycode, t_data *data);

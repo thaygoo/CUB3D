@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 18:43:00 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/04 20:43:11 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/06 15:26:41 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,3 @@ void	move_player(t_data *data)
 	if (data->p.key_D)
 		move_d(data);
 }
-

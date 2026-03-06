@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/05 19:13:06 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/06 15:41:51 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	init_data(t_data *data)
 	data->map.floor_color[0] = -1;
 	data->map.floor_color[1] = -1;
 	data->map.floor_color[2] = -1;
-	data->map.ceiling_color[0] = -1;	// data->p.angle_speed = 0.01;
+	data->map.ceiling_color[0] = -1; // data->p.angle_speed = 0.01;
 	data->map.ceiling_color[1] = -1;
 	data->map.ceiling_color[2] = -1;
 	data->map.player_x = -1;
@@ -43,10 +43,10 @@ void	init_game(t_data *data)
 }
 
 void	init_player(t_data *data)
-{	
+{
 	data->p.radius = 8;
-	data->p.x = data->map.player_x * BLOCK + BLOCK/2;
-	data->p.y = data->map.player_y * BLOCK + BLOCK/2;
+	data->p.x = data->map.player_x * BLOCK + BLOCK / 2;
+	data->p.y = data->map.player_y * BLOCK + BLOCK / 2;
 	data->p.angle = PI * 1 / 3;
 	data->p.step = 1;
 	data->p.angle_speed = 2 * PI / 360;
@@ -61,9 +61,9 @@ void	init_player(t_data *data)
 	data->p.top = 0;
 	data->p.bottom = 0;
 	if (data->map.player_dir == 'N')
-		data->p.angle = PI * 3/2;
+		data->p.angle = PI * 3 / 2;
 	else if (data->map.player_dir == 'S')
-		data->p.angle = PI * 1/2;
+		data->p.angle = PI * 1 / 2;
 	else if (data->map.player_dir == 'E')
 		data->p.angle = 0;
 	else if (data->map.player_dir == 'W')
@@ -88,7 +88,7 @@ int	draw_loop(t_data *data)
 	// cast_ray(data, data->p.angle);
 	cast_rays(data, 60);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
-	return (0);	
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -105,11 +105,9 @@ int	main(int argc, char **argv)
 	printf("player dir: %c\n", data.map.player_dir);
 	init_game(&data);
 	init_player(&data);
-	
-	mlx_hook(data.win_ptr, 2, 1L<<0, key_press, &data);
-	mlx_hook(data.win_ptr, 3, 1L<<1, key_release, &data);
+	mlx_hook(data.win_ptr, 2, 1L << 0, key_press, &data);
+	mlx_hook(data.win_ptr, 3, 1L << 1, key_release, &data);
 	mlx_loop_hook(data.mlx_ptr, draw_loop, &data);
-
 	// mlx_put_image_to_window(data.mlx_ptr, data.win_ptr, data.img_ptr, 0, 0);
 	mlx_loop(data.mlx_ptr);
 	return (0);

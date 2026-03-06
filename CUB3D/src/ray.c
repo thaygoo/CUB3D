@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:04:35 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/05 17:45:18 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/06 15:27:31 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ void	ray_hitlookup(t_ray *r, t_data *data)
 			r->mapY += r->stepY;
 			r->side = 1;
 		}
-		// if (data->map.grid[r->mapY][r->mapX] == '1')
 		if (data->map.grid[r->mapY][r->mapX] == '1')
 			hit = 1;
 	}
@@ -123,7 +122,6 @@ void	ray_cast(t_ray *ray, t_data *data, int color)
 		ray->dist = ray->sideDistY - ray->deltaDistY;
 	ray->hitX = data->p.x + ray->dx * ray->dist * BLOCK;
 	ray->hitY = data->p.y + ray->dy * ray->dist * BLOCK;
-	// draw_line(data, data->p.x, data->p.y, ray->hitX, ray->hitY, 0xFFFF00);
 	draw_ray_line(data, ray->hitX, ray->hitY, color);
 }
 

@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:04:35 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/10 20:49:51 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/10 21:25:08 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	set_ray_one(t_ray *r, t_data *data, float angle)
 	r->mapY = (int)r->py;
 	r->deltaDistX = fabs(1.0f / r->dx);
 	r->deltaDistY = fabs(1.0f / r->dy);
+	r->angle = angle;
 }
 
 void	set_ray_two(t_ray *r)
@@ -114,8 +115,8 @@ void	ray_hitlookup(t_ray *r, t_data *data)
 			hit = 1;
 	}
 }
-
-void	ray_cast(t_ray *ray, t_data *data, int color)
+// cast rays in 2d map area
+void	draw_2d_ray(t_ray *ray, t_data *data, int color)
 {
 	if (ray->side == 0)
 		ray->dist = ray->sideDistX - ray->deltaDistX;
@@ -126,14 +127,14 @@ void	ray_cast(t_ray *ray, t_data *data, int color)
 	draw_ray_line(data, ray->hitX, ray->hitY, color);
 }
 
-void	cast_ray(t_data *data, float angle, int color)
-{
-	t_ray	ray;
+// void	cast_ray(t_data *data, float angle, int color)
+// {
+// 	t_ray	ray;
 
-	ray_init_set(&ray, data, angle);
-	ray_hitlookup(&ray, data);
-	ray_cast(&ray, data, color);
-}
+// 	ray_init_set(&ray, data, angle);
+// 	ray_hitlookup(&ray, data);
+// 	ray_cast(&ray, data, color);
+// }
 
 // void	cast_rays(t_data *data, int fov)
 // {
@@ -210,25 +211,22 @@ void draw_3d_slice(t_data *data, t_ray *ray, int i, int numRays)
 			put_pixel(data, screenX + w, y, floorColor);
 }
 
-// clean the rayangle vars and functions to use just the ray.angle
 void cast_rays(t_data *data)
 {
-	int numRays = 256;
-	float fovRad = 60 * (PI / 180.0f);
-	float angleStep = fovRad / numRays;
-
-	float startAngle = data->p.angle - (fovRad / 2);
+	t_ray	ray;
+	int		numRays = 256;
+	float	fovRad = 60 * (PI / 180.0f);
+	float	angleStep = fovRad / numRays;
+	float	startAngle = data->p.angle - (fovRad / 2);
 
 	for (int i = 0; i < numRays; i++)
 	{
 		float rayAngle = startAngle + i * angleStep;
 
-		t_ray ray;
 		ray_init_set(&ray, data, rayAngle);
-		ray.angle = rayAngle;
 		ray_hitlookup(&ray, data);
 
-		ray_cast(&ray, data, 0xFF0000);   // 2D ray (debug)
-		draw_3d_slice(data, &ray, i, numRays);
+		draw_2d_ray(&ray, data, 0xFF0000); 
+		draw_3d_slice(data, &ray, i, numRays); 
 	}
 }

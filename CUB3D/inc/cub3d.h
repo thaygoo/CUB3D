@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/10 20:32:23 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/10 21:19:56 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void	draw_map(t_data *data);
 // void	draw_line(t_data *data, float x0, float y0, float x1, float y1, int color);
 void	draw_ray_line(t_data *data, float x1, float y1, int color);
 bool	touch(float px, float py, t_data *data);
-void	cast_ray(t_data *data, float angle, int color);
+// void	cast_ray(t_data *data, float angle, int color);
 // void	cast_rays(t_data *data, int fov);
 void	cast_rays(t_data *data);
 

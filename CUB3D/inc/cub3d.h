@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/05 18:18:35 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/10 20:32:23 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ typedef struct s_ray
 	float	hitX;
 	float	hitY;
 	int		side;
+	float	angle;
 }	t_ray;
 
 typedef struct s_line
@@ -134,7 +135,8 @@ void	draw_map(t_data *data);
 void	draw_ray_line(t_data *data, float x1, float y1, int color);
 bool	touch(float px, float py, t_data *data);
 void	cast_ray(t_data *data, float angle, int color);
-void	cast_rays(t_data *data, int fov);
+// void	cast_rays(t_data *data, int fov);
+void	cast_rays(t_data *data);
 
 int		key_press(int keycode, t_data *data);
 int		key_release(int keycode, t_data *data);

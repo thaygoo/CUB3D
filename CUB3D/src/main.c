@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/06 15:41:51 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/10 19:58:03 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	init_data(t_data *data)
 	data->map.floor_color[0] = -1;
 	data->map.floor_color[1] = -1;
 	data->map.floor_color[2] = -1;
-	data->map.ceiling_color[0] = -1; // data->p.angle_speed = 0.01;
+	data->map.ceiling_color[0] = -1; 
 	data->map.ceiling_color[1] = -1;
 	data->map.ceiling_color[2] = -1;
 	data->map.player_x = -1;
@@ -86,7 +86,7 @@ int	draw_loop(t_data *data)
 	draw_circle(data, data->p.x, data->p.y, data->p.radius);
 	move_player(data);
 	// cast_ray(data, data->p.angle);
-	cast_rays(data, 60);
+	cast_rays(data);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
 	return (0);
 }
@@ -101,8 +101,8 @@ int	main(int argc, char **argv)
 	if (parse_map(argv[1], &data) != 0)
 		return (1);
 	printf("Success: Map loaded\n");
-	printf("player position: %d %d\n", data.map.player_x, data.map.player_y);
-	printf("player dir: %c\n", data.map.player_dir);
+	// printf("player position: %d %d\n", data.map.player_x, data.map.player_y);
+	// printf("player dir: %c\n", data.map.player_dir);
 	init_game(&data);
 	init_player(&data);
 	mlx_hook(data.win_ptr, 2, 1L << 0, key_press, &data);

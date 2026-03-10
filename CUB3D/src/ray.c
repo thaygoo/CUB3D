@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:04:35 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/06 15:27:31 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/10 20:49:51 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	init_ray_zero(t_ray *r)
 	r->hitX = 0;
 	r->hitY = 0;
 	r->side = -1;
+	r->angle = 0;
 }
 
 void	set_ray_one(t_ray *r, t_data *data, float angle)
@@ -134,21 +135,100 @@ void	cast_ray(t_data *data, float angle, int color)
 	ray_cast(&ray, data, color);
 }
 
-void	cast_rays(t_data *data, int fov)
-{
-	int	i;
+// void	cast_rays(t_data *data, int fov)
+// {
+// 	int	i;
 
-	cast_ray(data, data->p.angle, 0xFFFF00);
-	i = 1;
-	while (i <= fov / 2)
+// 	cast_ray(data, data->p.angle, 0xFFFF00);
+// 	i = 1;
+// 	while (i <= fov / 2)
+// 	{
+// 		cast_ray(data, data->p.angle + i * data->p.angle_speed, 0xFF0000);
+// 		i++;
+// 	}
+// 	i = 1;
+// 	while (i <= fov / 2)
+// 	{
+// 		cast_ray(data, data->p.angle - i * data->p.angle_speed, 0xFF0000);
+// 		i++;
+// 	}
+// }
+
+
+/*
+int viewWidth - width of the 3D view (half of the window)
+
+float sliceWidth - how wide each vertical slice is
+
+int screenX - x-position of this slice on screen
+
+int lineHeight - compute wall height (simple version)
+
+int start, end center the wall vertically
+*/	
+void draw_3d_slice(t_data *data, t_ray *ray, int i, int numRays)
+{
+	int viewWidth = WIDTH / 2;
+	float sliceWidth = (float)viewWidth / numRays;
+
+	int screenX = (int)(i * sliceWidth) + viewWidth;
+
+	// int lineHeight = (int)(HEIGHT / ray->dist);  //fisheyed
+	float correctedDist = ray->dist * cos(ray->angle - data->p.angle);
+	int lineHeight = (int)(HEIGHT / correctedDist);
+
+
+
+	int start = (HEIGHT / 2) - (lineHeight / 2);
+	int end   = (HEIGHT / 2) + (lineHeight / 2);
+
+	if (start < 0) start = 0;
+	if (end >= HEIGHT) end = HEIGHT - 1;
+
+	int ceilColor = (data->map.ceiling_color[0] << 16)
+				  | (data->map.ceiling_color[1] << 8)
+				  |  data->map.ceiling_color[2];
+
+	int floorColor = (data->map.floor_color[0] << 16)
+				   | (data->map.floor_color[1] << 8)
+				   |  data->map.floor_color[2];
+
+	for (int y = 0; y < start; y++)
+		for (int w = 0; w < sliceWidth; w++)
+			put_pixel(data, screenX + w, y, ceilColor);
+
+	int wallBright = 0xFFFFFF;
+	int wallDark   = 0xAAAAAA;
+	int wallColor  = (ray->side == 0) ? wallBright : wallDark;
+
+	for (int y = start; y < end; y++)
+		for (int w = 0; w < sliceWidth; w++)
+			put_pixel(data, screenX + w, y, wallColor);
+
+	for (int y = end; y < HEIGHT; y++)
+		for (int w = 0; w < sliceWidth; w++)
+			put_pixel(data, screenX + w, y, floorColor);
+}
+
+// clean the rayangle vars and functions to use just the ray.angle
+void cast_rays(t_data *data)
+{
+	int numRays = 256;
+	float fovRad = 60 * (PI / 180.0f);
+	float angleStep = fovRad / numRays;
+
+	float startAngle = data->p.angle - (fovRad / 2);
+
+	for (int i = 0; i < numRays; i++)
 	{
-		cast_ray(data, data->p.angle + i * data->p.angle_speed, 0xFF0000);
-		i++;
-	}
-	i = 1;
-	while (i <= fov / 2)
-	{
-		cast_ray(data, data->p.angle - i * data->p.angle_speed, 0xFF0000);
-		i++;
+		float rayAngle = startAngle + i * angleStep;
+
+		t_ray ray;
+		ray_init_set(&ray, data, rayAngle);
+		ray.angle = rayAngle;
+		ray_hitlookup(&ray, data);
+
+		ray_cast(&ray, data, 0xFF0000);   // 2D ray (debug)
+		draw_3d_slice(data, &ray, i, numRays);
 	}
 }

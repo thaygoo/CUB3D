@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/10 21:19:56 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/11 16:53:23 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,29 @@ typedef struct s_line
 	float	y_inc;
 } t_line;
 
+typedef enum e_tex_id
+{
+	NORTH = 0,
+	SOUTH = 1,
+	WEST  = 2,
+	EAST  = 3
+}   t_tex_id;
+
+typedef struct s_tex
+{
+	void	*img;
+	char	*addr;
+	int		w;
+	int		h;
+	int		bpp;
+	int		line_len;
+	int		endian;
+} t_tex;
+
 typedef struct s_data
 {
 	t_map		map;
+	t_tex		tex[4];
 	t_player	p;
 	void		*mlx_ptr;
 	void		*win_ptr;
@@ -137,6 +157,7 @@ bool	touch(float px, float py, t_data *data);
 // void	cast_ray(t_data *data, float angle, int color);
 // void	cast_rays(t_data *data, int fov);
 void	cast_rays(t_data *data);
+void	load_textures(t_data *data);
 
 int		key_press(int keycode, t_data *data);
 int		key_release(int keycode, t_data *data);

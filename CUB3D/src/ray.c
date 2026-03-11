@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:04:35 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/10 21:25:08 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/11 19:11:53 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,29 +92,64 @@ void	ray_init_set(t_ray *ray, t_data *data, float angle)
 	set_ray_two(ray);
 }
 
-void	ray_hitlookup(t_ray *r, t_data *data)
-{
-	int	hit;
+// void	ray_hitlookup(t_ray *r, t_data *data)
+// {
+// 	int	hit;
 
-	hit = 0;
+// 	hit = 0;
+// 	while (!hit)
+// 	{
+// 		if (r->sideDistX < r->sideDistY)
+// 		{
+// 			r->sideDistX += r->deltaDistX;
+// 			r->mapX += r->stepX;
+// 			r->side = 0;
+// 		}
+// 		else
+// 		{
+// 			r->sideDistY += r->deltaDistY;
+// 			r->mapY += r->stepY;
+// 			r->side = 1;
+// 		}
+// 		if (data->map.grid[r->mapY][r->mapX] == '1')
+// 			hit = 1;
+// 	}
+// }
+
+void ray_hitlookup(t_ray *r, t_data *data)
+{
+	int hit = 0;
+
 	while (!hit)
 	{
 		if (r->sideDistX < r->sideDistY)
 		{
 			r->sideDistX += r->deltaDistX;
 			r->mapX += r->stepX;
-			r->side = 0;
+			r->side = 0; // vertical wall
 		}
 		else
 		{
 			r->sideDistY += r->deltaDistY;
 			r->mapY += r->stepY;
-			r->side = 1;
+			r->side = 1; // horizontal wall
 		}
+
 		if (data->map.grid[r->mapY][r->mapX] == '1')
 			hit = 1;
 	}
+
+	// --- EXACT WALL DISTANCE (fixes close‑range wobble) ---
+	if (r->side == 0)
+		r->dist = (r->mapX - r->px + (1 - r->stepX) / 2.0f) / r->dx;
+	else
+		r->dist = (r->mapY - r->py + (1 - r->stepY) / 2.0f) / r->dy;
+
+	// --- EXACT HIT POINT IN PIXELS ---
+	r->hitX = (r->px + r->dx * r->dist) * BLOCK;
+	r->hitY = (r->py + r->dy * r->dist) * BLOCK;
 }
+
 // cast rays in 2d map area
 void	draw_2d_ray(t_ray *ray, t_data *data, int color)
 {
@@ -124,6 +159,7 @@ void	draw_2d_ray(t_ray *ray, t_data *data, int color)
 		ray->dist = ray->sideDistY - ray->deltaDistY;
 	ray->hitX = data->p.x + ray->dx * ray->dist * BLOCK;
 	ray->hitY = data->p.y + ray->dy * ray->dist * BLOCK;
+
 	draw_ray_line(data, ray->hitX, ray->hitY, color);
 }
 
@@ -166,18 +202,89 @@ int screenX - x-position of this slice on screen
 int lineHeight - compute wall height (simple version)
 
 int start, end center the wall vertically
-*/	
-void draw_3d_slice(t_data *data, t_ray *ray, int i, int numRays)
+*/
+// void draw_3d_slice(t_data *data, t_ray *ray, int i, int numRays)
+// {
+// 	// int viewWidth = WIDTH / 2;
+// 	int viewWidth = WIDTH / 2;
+// 	float sliceWidth = (float)viewWidth / numRays;
+
+// 	int screenX = (int)(i * sliceWidth) + viewWidth;
+// 	// int screenX = (int)(i * sliceWidth) + 0;
+
+// 	// int lineHeight = (int)(HEIGHT / ray->dist);  //fisheyed
+// 	float correctedDist = ray->dist * cos(ray->angle - data->p.angle);
+// 	int lineHeight = (int)(HEIGHT / correctedDist);
+
+
+
+// 	int start = (HEIGHT / 2) - (lineHeight / 2);
+// 	int end   = (HEIGHT / 2) + (lineHeight / 2);
+
+// 	if (start < 0) start = 0;
+// 	if (end >= HEIGHT) end = HEIGHT - 1;
+
+// 	int ceilColor = (data->map.ceiling_color[0] << 16)
+// 				  | (data->map.ceiling_color[1] << 8)
+// 				  |  data->map.ceiling_color[2];
+
+// 	int floorColor = (data->map.floor_color[0] << 16)
+// 				   | (data->map.floor_color[1] << 8)
+// 				   |  data->map.floor_color[2];
+
+// 	for (int y = 0; y < start; y++)
+// 		for (int w = 0; w < sliceWidth; w++)
+// 			put_pixel(data, screenX + w, y, ceilColor);
+
+// 	int wallBright = 0xFFFFFF;
+// 	int wallDark   = 0xAAAAAA;
+// 	int wallColor  = (ray->side == 0) ? wallBright : wallDark;
+
+// 	for (int y = start; y < end; y++)
+// 		for (int w = 0; w < sliceWidth; w++)
+// 			put_pixel(data, screenX + w, y, wallColor);
+
+// 	for (int y = end; y < HEIGHT; y++)
+// 		for (int w = 0; w < sliceWidth; w++)
+// 			put_pixel(data, screenX + w, y, floorColor);
+// }
+
+void load_textures(t_data *data)
+{
+	data->tex[NORTH].img = mlx_xpm_file_to_image(
+		data->mlx_ptr, data->map.no_texture, &data->tex[NORTH].w, &data->tex[NORTH].h);
+	data->tex[NORTH].addr = mlx_get_data_addr(
+		data->tex[NORTH].img, &data->tex[NORTH].bpp,
+		&data->tex[NORTH].line_len, &data->tex[NORTH].endian);
+	data->tex[SOUTH].img = mlx_xpm_file_to_image(
+		data->mlx_ptr, data->map.so_texture, &data->tex[SOUTH].w, &data->tex[SOUTH].h);
+	data->tex[SOUTH].addr = mlx_get_data_addr(
+		data->tex[SOUTH].img, &data->tex[SOUTH].bpp,
+		&data->tex[SOUTH].line_len, &data->tex[SOUTH].endian);
+	data->tex[WEST].img = mlx_xpm_file_to_image(
+		data->mlx_ptr, data->map.we_texture, &data->tex[WEST].w, &data->tex[WEST].h);
+	data->tex[WEST].addr = mlx_get_data_addr(
+		data->tex[WEST].img, &data->tex[WEST].bpp,
+		&data->tex[WEST].line_len, &data->tex[WEST].endian);
+	data->tex[EAST].img = mlx_xpm_file_to_image(
+		data->mlx_ptr, data->map.ea_texture, &data->tex[EAST].w, &data->tex[EAST].h);
+	data->tex[EAST].addr = mlx_get_data_addr(
+		data->tex[EAST].img, &data->tex[EAST].bpp,
+		&data->tex[EAST].line_len, &data->tex[EAST].endian);
+}
+
+void draw_3d_textures(t_data *data, t_ray *ray, int i, int numRays)
 {
 	int viewWidth = WIDTH / 2;
-	float sliceWidth = (float)viewWidth / numRays;
+	// float sliceWidth = (float)viewWidth / numRays;
+	int sliceWidth = viewWidth / numRays;
 
 	int screenX = (int)(i * sliceWidth) + viewWidth;
 
-	// int lineHeight = (int)(HEIGHT / ray->dist);  //fisheyed
-	float correctedDist = ray->dist * cos(ray->angle - data->p.angle);
-	int lineHeight = (int)(HEIGHT / correctedDist);
-
+	float perpDist = ray->dist * cos(ray->angle - data->p.angle);
+	if (perpDist < 0.0001f)
+		perpDist = 0.0001f;
+	int lineHeight = (int)(HEIGHT / perpDist);
 
 
 	int start = (HEIGHT / 2) - (lineHeight / 2);
@@ -194,22 +301,73 @@ void draw_3d_slice(t_data *data, t_ray *ray, int i, int numRays)
 				   | (data->map.floor_color[1] << 8)
 				   |  data->map.floor_color[2];
 
+	// draw ceiling
 	for (int y = 0; y < start; y++)
 		for (int w = 0; w < sliceWidth; w++)
 			put_pixel(data, screenX + w, y, ceilColor);
 
-	int wallBright = 0xFFFFFF;
-	int wallDark   = 0xAAAAAA;
-	int wallColor  = (ray->side == 0) ? wallBright : wallDark;
+	// --- TEXTURED WALL STARTS HERE ---
 
+	// choose texture
+	int tex_id;
+	if (ray->side == 0)
+		tex_id = (ray->dx > 0) ? EAST : WEST;
+	else
+		tex_id = (ray->dy > 0) ? SOUTH : NORTH;
+
+	// compute texture X coordinate
+	float wallX;
+
+	if (ray->side == 0)
+		wallX = ray->hitY / BLOCK;   // vertical wall → use Y
+	else
+		wallX = ray->hitX / BLOCK;   // horizontal wall → use X
+
+	wallX -= floor(wallX);
+
+	int texX = (int)(wallX * data->tex[tex_id].w);
+
+	// flip if needed
+	if ((ray->side == 0 && ray->dx < 0) ||
+		(ray->side == 1 && ray->dy > 0))
+		texX = data->tex[tex_id].w - texX - 1;
+	
+
+
+
+
+	// draw textured wall
 	for (int y = start; y < end; y++)
-		for (int w = 0; w < sliceWidth; w++)
-			put_pixel(data, screenX + w, y, wallColor);
+	{
+		// int d = (y - start) * 256 - HEIGHT * 128 + lineHeight * 128;
+		int d = (y - start) * 256;
+		int texY = ((d * data->tex[tex_id].h) / lineHeight) / 256;
 
+		//clamp
+		if (texY < 0) texY = 0;
+		if (texY >= data->tex[tex_id].h) texY = data->tex[tex_id].h - 1;
+
+
+		char *pixel = data->tex[tex_id].addr
+			+ texY * data->tex[tex_id].line_len
+			+ texX * (data->tex[tex_id].bpp / 8);
+
+		int color = *(unsigned int *)pixel;
+
+		for (int w = 0; w < sliceWidth; w++)
+			put_pixel(data, screenX + w, y, color);
+	}
+
+	// --- TEXTURED WALL ENDS HERE ---
+
+	// draw floor
 	for (int y = end; y < HEIGHT; y++)
 		for (int w = 0; w < sliceWidth; w++)
 			put_pixel(data, screenX + w, y, floorColor);
 }
+
+
+
 
 void cast_rays(t_data *data)
 {
@@ -226,7 +384,8 @@ void cast_rays(t_data *data)
 		ray_init_set(&ray, data, rayAngle);
 		ray_hitlookup(&ray, data);
 
-		draw_2d_ray(&ray, data, 0xFF0000); 
-		draw_3d_slice(data, &ray, i, numRays); 
+		draw_2d_ray(&ray, data, 0xFF0000);
+		// draw_3d_slice(data, &ray, i, numRays);
+		draw_3d_textures(data, &ray, i, numRays);
 	}
 }

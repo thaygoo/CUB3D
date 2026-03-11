@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/10 19:58:03 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/11 17:37:55 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,11 @@ int	main(int argc, char **argv)
 	if (parse_map(argv[1], &data) != 0)
 		return (1);
 	printf("Success: Map loaded\n");
+	
+	init_game(&data);
+	load_textures(&data);
 	// printf("player position: %d %d\n", data.map.player_x, data.map.player_y);
 	// printf("player dir: %c\n", data.map.player_dir);
-	init_game(&data);
 	init_player(&data);
 	mlx_hook(data.win_ptr, 2, 1L << 0, key_press, &data);
 	mlx_hook(data.win_ptr, 3, 1L << 1, key_release, &data);

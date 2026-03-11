@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 17:59:01 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/05 18:16:42 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/11 16:23:52 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void	draw_map(t_data *data)
 		{
 			if (grid[y][x] == '1')
 				draw_square(data, x * BLOCK, y * BLOCK, BLOCK);
+				// draw_square(data, x * WIDTH / 2 / data->map.width, y * HEIGHT / 2 / data->map.height, WIDTH / 2 / data->map.width);
 			x++;
 		}
 		y++;

@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:04:35 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/12 19:47:30 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 20:54:13 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,26 +172,7 @@ tex_x - texture column
 tex_y - texture row
 */
 
-
-typedef	struct	s_texture_sample
-{
-	float	slice_width;
-	int		screen_x;
-	float	perp_dist;
-	int		line_height;
-	int		start;
-	int		end;
-	int		ceil_color;
-	int		floor_color;
-	int		tex_id;
-	float	wall_x;
-	int		tex_x;
-	int		tex_y;
-	int		tex_start;
-	char	*pixel;
-	int		color;
-}	t_texture_sample;
-
+// setting up values for texture to wall sampling
 void	draw_3d_setup(t_data *data, t_ray *ray, t_texture_sample *t)
 {
 	t->perp_dist = ray->dist * cos(ray->angle - data->p.angle);
@@ -199,187 +180,156 @@ void	draw_3d_setup(t_data *data, t_ray *ray, t_texture_sample *t)
 		t->perp_dist = 0.0001f;
 	t->line_height = (int)(HEIGHT / t->perp_dist);
 	t->start = (HEIGHT / 2) - (t->line_height / 2);
-	t->end   = (HEIGHT / 2) + (t->line_height / 2);
+	t->end = (HEIGHT / 2) + (t->line_height / 2);
 	// clamping to not going out of bounds
-	if (t->start < 0) 
+	if (t->start < 0)
 		t->start = 0;
-	if (t->end >= HEIGHT) 
+	if (t->end >= HEIGHT)
 		t->end = HEIGHT - 1;
 	t->ceil_color = (data->map.ceiling_color[0] << 16)
-				  | (data->map.ceiling_color[1] << 8)
-				  |  data->map.ceiling_color[2];
+		| (data->map.ceiling_color[1] << 8)
+		| data->map.ceiling_color[2];
 	t->floor_color = (data->map.floor_color[0] << 16)
-				   | (data->map.floor_color[1] << 8)
-				   |  data->map.floor_color[2];
+		| (data->map.floor_color[1] << 8)
+		| data->map.floor_color[2];
 }
+
+/*
+SETUP for texturesssss
+choose texture
+compute texture X coordinate
+flip if needed
+handle very tall walls(linehight > HEIGHT) when player is close to the wall
+*/
+void	draw_3d_setup_two(t_data *data, t_ray *ray, t_texture_sample *t)
+{
+	if (ray->side == 0)
+	{
+		if (ray->dx > 0)
+			t->tex_id = EAST;
+		else
+			t->tex_id = WEST;
+	}
+	else
+	{
+		if (ray->dy > 0)
+			t->tex_id = SOUTH;
+		else
+			t->tex_id = NORTH;
+	}
+	if (ray->side == 0)
+		t->wall_x = ray->hity / BLOCK;
+	else
+		t->wall_x = ray->hitx / BLOCK;
+	t->wall_x -= floor(t->wall_x);
+	t->tex_x = (int)(t->wall_x * data->tex[t->tex_id].w);
+	if ((ray->side == 0 && ray->dx < 0) || (ray->side == 1 && ray->dy > 0))
+		t->tex_x = data->tex[t->tex_id].w - t->tex_x - 1;
+	t->tex_start = 0;
+	if (t->line_height > HEIGHT)
+		t->tex_start = (t->line_height - HEIGHT) / 2;
+}
+
+// draw ceiling
+void	draw_3d_ceiling(t_data *data, t_texture_sample *t)
+{
+	int	y;
+	int	w;
+
+	y = 0;
+	while (y < t->start)
+	{
+		w = 0;
+		while (w < t->slice_width)
+		{
+			put_pixel(data, t->screen_x + w, y, t->ceil_color);
+			w++;
+		}
+		y++;
+	}
+}
+
+void	draw_3d_texture_to_wall(t_data *data, t_texture_sample *t)
+{
+	int	y;
+	int	w;
+	int	d;
+
+	y = t->start;
+	while (y < t->end)
+	{
+		d = (y - t->start + t->tex_start) * 256;
+		t->tex_y = ((d * data->tex[t->tex_id].h) / t->line_height) / 256;
+		if (t->tex_y < 0)
+			t->tex_y = 0;
+		if (t->tex_y >= data->tex[t->tex_id].h)
+			t->tex_y = data->tex[t->tex_id].h - 1;
+		t->pixel = data->tex[t->tex_id].addr
+			+ t->tex_y * data->tex[t->tex_id].line_len
+			+ t->tex_x * (data->tex[t->tex_id].bpp / 8);
+		t->color = *(unsigned int *)t->pixel;
+		w = 0;
+		while (w < t->slice_width)
+		{
+			put_pixel(data, t->screen_x + w, y, t->color);
+			w++;
+		}
+		y++;
+	}
+}
+
+void	draw_3d_floor(t_data *data, t_texture_sample *t)
+{
+	int	y;
+	int	w;
+
+	y = t->end;
+	while (y < HEIGHT)
+	{
+		w = 0;
+		while (w < t->slice_width)
+		{
+			put_pixel(data, t->screen_x + w, y, t->floor_color);
+			w++;
+		}
+		y++;
+	}
+}
+
 void	draw_3d_textures(t_data *data, t_ray *ray, int i, int numRays)
 {
-	t_texture_sample t;
+	t_texture_sample	t;
 
 	t.slice_width = (float)WIDTH / numRays;
 	t.screen_x = (int)(i * t.slice_width);
 	draw_3d_setup(data, ray, &t);
-	
-
-
-	// draw ceiling
-	for (int y = 0; y < t.start; y++)
-		for (int w = 0; w < t.slice_width; w++)
-			put_pixel(data, t.screen_x + w, y, t.ceil_color);
-
-	// --- TEXTURED WALL STARTS HERE ---
-
-	// choose texture
-	if (ray->side == 0)
-		t.tex_id = (ray->dx > 0) ? EAST : WEST;
-	else
-		t.tex_id = (ray->dy > 0) ? SOUTH : NORTH;
-
-	// compute texture X coordinate
-	if (ray->side == 0)
-		t.wall_x = ray->hity / BLOCK;   // vertical wall → use Y
-	else
-		t.wall_x = ray->hitx / BLOCK;   // horizontal wall → use X
-	t.wall_x -= floor(t.wall_x);
-
-	t.tex_x = (int)(t.wall_x * data->tex[t.tex_id].w);
-
-	// flip if needed
-	if ((ray->side == 0 && ray->dx < 0) ||
-		(ray->side == 1 && ray->dy > 0))
-		t.tex_x = data->tex[t.tex_id].w - t.tex_x - 1;
-	
-	// handles very tall walls(linehight > HEIGHT) when player is close to the wall
-	t.tex_start = 0;
-	if (t.line_height > HEIGHT)
-		t.tex_start = (t.line_height - HEIGHT) / 2;
-	
-	// draw textured wall
-	for (int y = t.start; y < t.end; y++)
-	{
-		int d = (y - t.start + t.tex_start) * 256;
-		t.tex_y = ((d * data->tex[t.tex_id].h) / t.line_height) / 256;
-	
-		if (t.tex_y < 0) t.tex_y = 0;
-		if (t.tex_y >= data->tex[t.tex_id].h) t.tex_y = data->tex[t.tex_id].h - 1;
-
-		t.pixel = data->tex[t.tex_id].addr
-			+ t.tex_y * data->tex[t.tex_id].line_len
-			+ t.tex_x * (data->tex[t.tex_id].bpp / 8);
-
-		t.color = *(unsigned int *)t.pixel;
-
-		for (int w = 0; w < t.slice_width; w++)
-			put_pixel(data, t.screen_x + w, y, t.color);
-	}
-	// --- TEXTURED WALL ENDS HERE ---
-
-	// draw floor
-	for (int y = t.end; y < HEIGHT; y++)
-		for (int w = 0; w < t.slice_width; w++)
-			put_pixel(data, t.screen_x + w, y, t.floor_color);
+	draw_3d_ceiling(data, &t);
+	draw_3d_setup_two(data, ray, &t);
+	draw_3d_texture_to_wall(data, &t);
+	draw_3d_floor(data, &t);
 }
 
-void cast_rays(t_data *data)
+void	cast_rays(t_data *data)
 {
 	t_ray	ray;
-	int		numRays = 256;
-	float	fovRad = 60 * (PI / 180.0f);
-	float	angleStep = fovRad / numRays;
-	float	startAngle = data->p.angle - (fovRad / 2);
+	int		num_rays;
+	float	fov_rad;
+	float	angle_step;
+	float	start_angle;
+	float	ray_angle;
+	int		i;
 
-	for (int i = 0; i < numRays; i++)
+	num_rays = 256;
+	fov_rad = 60 * (PI / 180.0f);
+	angle_step = fov_rad / num_rays;
+	start_angle = data->p.angle - (fov_rad / 2);
+	i = 0;
+	while (i < num_rays)
 	{
-		float rayAngle = startAngle + i * angleStep;
-
-		ray_init_set(&ray, data, rayAngle);
+		ray_angle = start_angle + i * angle_step;
+		ray_init_set(&ray, data, ray_angle);
 		ray_hitlookup(&ray, data);
-		draw_3d_textures(data, &ray, i, numRays);
+		draw_3d_textures(data, &ray, i, num_rays);
+		i++;
 	}
 }
-
-
-// backup before slicinggggg
-// void	draw_3d_textures(t_data *data, t_ray *ray, int i, int numRays)
-// {
-// 	t_texture_sample t;
-
-// 	t.slice_width = (float)WIDTH / numRays;
-// 	t.screen_x = (int)(i * t.slice_width);
-
-	
-// 	t.perp_dist = ray->dist * cos(ray->angle - data->p.angle);
-// 	if (t.perp_dist < 0.0001f)
-// 		t.perp_dist = 0.0001f;
-// 	t.line_height = (int)(HEIGHT / t.perp_dist);
-// 	t.start = (HEIGHT / 2) - (t.line_height / 2);
-// 	t.end   = (HEIGHT / 2) + (t.line_height / 2);
-// 	// clamping to not going out of bounds
-// 	if (t.start < 0) t.start = 0;
-// 	if (t.end >= HEIGHT) t.end = HEIGHT - 1;
-
-// 	t.ceil_color = (data->map.ceiling_color[0] << 16)
-// 				  | (data->map.ceiling_color[1] << 8)
-// 				  |  data->map.ceiling_color[2];
-
-// 	t.floor_color = (data->map.floor_color[0] << 16)
-// 				   | (data->map.floor_color[1] << 8)
-// 				   |  data->map.floor_color[2];
-
-// 	// draw ceiling
-// 	for (int y = 0; y < t.start; y++)
-// 		for (int w = 0; w < t.slice_width; w++)
-// 			put_pixel(data, t.screen_x + w, y, t.ceil_color);
-
-// 	// --- TEXTURED WALL STARTS HERE ---
-
-// 	// choose texture
-// 	if (ray->side == 0)
-// 		t.tex_id = (ray->dx > 0) ? EAST : WEST;
-// 	else
-// 		t.tex_id = (ray->dy > 0) ? SOUTH : NORTH;
-
-// 	// compute texture X coordinate
-// 	if (ray->side == 0)
-// 		t.wall_x = ray->hity / BLOCK;   // vertical wall → use Y
-// 	else
-// 		t.wall_x = ray->hitx / BLOCK;   // horizontal wall → use X
-// 	t.wall_x -= floor(t.wall_x);
-
-// 	t.tex_x = (int)(t.wall_x * data->tex[t.tex_id].w);
-
-// 	// flip if needed
-// 	if ((ray->side == 0 && ray->dx < 0) ||
-// 		(ray->side == 1 && ray->dy > 0))
-// 		t.tex_x = data->tex[t.tex_id].w - t.tex_x - 1;
-	
-// 	// handles very tall walls(linehight > HEIGHT) when player is close to the wall
-// 	t.tex_start = 0;
-// 	if (t.line_height > HEIGHT)
-// 		t.tex_start = (t.line_height - HEIGHT) / 2;
-	
-// 	// draw textured wall
-// 	for (int y = t.start; y < t.end; y++)
-// 	{
-// 		int d = (y - t.start + t.tex_start) * 256;
-// 		t.tex_y = ((d * data->tex[t.tex_id].h) / t.line_height) / 256;
-	
-// 		if (t.tex_y < 0) t.tex_y = 0;
-// 		if (t.tex_y >= data->tex[t.tex_id].h) t.tex_y = data->tex[t.tex_id].h - 1;
-
-// 		t.pixel = data->tex[t.tex_id].addr
-// 			+ t.tex_y * data->tex[t.tex_id].line_len
-// 			+ t.tex_x * (data->tex[t.tex_id].bpp / 8);
-
-// 		t.color = *(unsigned int *)t.pixel;
-
-// 		for (int w = 0; w < t.slice_width; w++)
-// 			put_pixel(data, t.screen_x + w, y, t.color);
-// 	}
-// 	// --- TEXTURED WALL ENDS HERE ---
-
-// 	// draw floor
-// 	for (int y = t.end; y < HEIGHT; y++)
-// 		for (int w = 0; w < t.slice_width; w++)
-// 			put_pixel(data, t.screen_x + w, y, t.floor_color);
-// }

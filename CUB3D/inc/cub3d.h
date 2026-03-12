@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/12 18:53:18 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 20:53:29 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,25 @@ typedef struct s_tex
 	int		line_len;
 	int		endian;
 }	t_tex;
+
+typedef struct	s_texture_sample
+{
+	float	slice_width;
+	int		screen_x;
+	float	perp_dist;
+	int		line_height;
+	int		start;
+	int		end;
+	int		ceil_color;
+	int		floor_color;
+	int		tex_id;
+	float	wall_x;
+	int		tex_x;
+	int		tex_y;
+	int		tex_start;
+	char	*pixel;
+	int		color;
+}	t_texture_sample;
 
 typedef struct s_data
 {

@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 19:16:20 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/06 15:25:54 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 21:24:04 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 int	key_press(int keycode, t_data *data)
 {
 	if (keycode == W)
-		data->p.key_W = true;
+		data->p.key_w = true;
 	if (keycode == A)
-		data->p.key_A = true;
+		data->p.key_a = true;
 	if (keycode == S)
-		data->p.key_S = true;
+		data->p.key_s = true;
 	if (keycode == D)
-		data->p.key_D = true;
+		data->p.key_d = true;
 	if (keycode == LEFT)
 		data->p.key_left = true;
 	if (keycode == RIGHT)
@@ -32,13 +32,13 @@ int	key_press(int keycode, t_data *data)
 int	key_release(int keycode, t_data *data)
 {
 	if (keycode == W)
-		data->p.key_W = false;
+		data->p.key_w = false;
 	if (keycode == A)
-		data->p.key_A = false;
+		data->p.key_a = false;
 	if (keycode == S)
-		data->p.key_S = false;
+		data->p.key_s = false;
 	if (keycode == D)
-		data->p.key_D = false;
+		data->p.key_d = false;
 	if (keycode == LEFT)
 		data->p.key_left = false;
 	if (keycode == RIGHT)

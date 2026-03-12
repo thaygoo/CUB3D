@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/12 17:16:56 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 18:53:18 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,17 @@ typedef struct s_map
 }	t_map;
 
 typedef struct s_player
-{	
+{
 	int		radius;
 	float	x;
 	float	y;
 	float	angle;
 	float	step;
 	float	angle_speed;
-	bool	key_W;
-	bool	key_A;
-	bool	key_S;
-	bool	key_D;
+	bool	key_w;
+	bool	key_a;
+	bool	key_s;
+	bool	key_d;
 	bool	key_left;
 	bool	key_right;
 	int		left;
@@ -77,18 +77,18 @@ typedef struct s_ray
 	float	py;
 	float	dx;
 	float	dy;
-	int		mapX;
-	int		mapY;
-	float	deltaDistX;
-	float	deltaDistY;
-	int		stepX;
-	int		stepY;
-	float	sideDistX;
-	float	sideDistY;
+	int		mapx;
+	int		mapy;
+	float	delta_dist_x;
+	float	delta_dist_y;
+	int		stepx;
+	int		stepy;
+	float	side_dist_x;
+	float	side_dist_y;
 	float	dist;
 	int		hit;
-	float	hitX;
-	float	hitY;
+	float	hitx;
+	float	hity;
 	int		side;
 	float	angle;
 }	t_ray;
@@ -100,15 +100,15 @@ typedef struct s_line
 	float	steps;
 	float	x_inc;
 	float	y_inc;
-} t_line;
+}	t_line;
 
 typedef enum s_tex_id
 {
-	NORTH = 0,
-	SOUTH = 1,
-	WEST  = 2,
-	EAST  = 3
-}   t_tex_id;
+	NORTH	= 0,
+	SOUTH	= 1,
+	WEST	= 2,
+	EAST	= 3
+}	t_tex_id;
 
 typedef struct s_tex
 {
@@ -119,7 +119,7 @@ typedef struct s_tex
 	int		bpp;
 	int		line_len;
 	int		endian;
-} t_tex;
+}	t_tex;
 
 typedef struct s_data
 {
@@ -152,7 +152,6 @@ void	put_pixel(t_data *data, int x, int y, int color);
 void	draw_circle(t_data *data, int cx, int cy, int r);
 void	draw_square(t_data *data, int x, int y, int size);
 void	draw_map(t_data *data);
-// void	draw_line(t_data *data, float x0, float y0, float x1, float y1, int color);
 void	draw_ray_line(t_data *data, float x1, float y1, int color);
 bool	touch(float px, float py, t_data *data);
 // void	cast_ray(t_data *data, float angle, int color);

@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 18:43:00 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/06 15:26:41 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 18:51:37 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,12 @@ void	move_player(t_data *data)
 		data->p.angle = 0;
 	if (data->p.angle < 0)
 		data->p.angle = 2 * PI;
-	if (data->p.key_W)
+	if (data->p.key_w)
 		move_w(data);
-	if (data->p.key_S)
+	if (data->p.key_s)
 		move_s(data);
-	if (data->p.key_A)
+	if (data->p.key_a)
 		move_a(data);
-	if (data->p.key_D)
+	if (data->p.key_d)
 		move_d(data);
 }

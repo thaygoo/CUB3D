@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/12 17:04:23 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 19:21:12 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ void	init_player(t_data *data)
 	data->p.angle = PI * 1 / 3;
 	data->p.step = 1;
 	data->p.angle_speed = 2 * PI / 360;
-	data->p.key_W = false;
-	data->p.key_A = false;
-	data->p.key_S = false;
-	data->p.key_D = false;
+	data->p.key_w = false;
+	data->p.key_a = false;
+	data->p.key_s = false;
+	data->p.key_d = false;
 	data->p.key_left = false;
 	data->p.key_right = false;
 	data->p.left = 0;
@@ -101,11 +101,11 @@ int	main(int argc, char **argv)
 	if (parse_map(argv[1], &data) != 0)
 		return (1);
 	printf("Success: Map loaded\n");
-	
 	init_game(&data);
 	mlx_hook(data.win_ptr, 2, 1L << 0, key_press, &data);
 	mlx_hook(data.win_ptr, 3, 1L << 1, key_release, &data);
 	mlx_loop_hook(data.mlx_ptr, draw_loop, &data);
 	mlx_loop(data.mlx_ptr);
 	return (0);
+	//need to add ESC and window x click exiting 
 }

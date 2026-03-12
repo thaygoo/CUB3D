@@ -1,7 +1,7 @@
-NO ./wall.xpm
-SO ./wall.xpm
-WE ./wall.xpm
-EA ./wall.xpm
+NO ./wall_N.xpm
+SO ./wall_S.xpm
+WE ./wall_W.xpm
+EA ./wall_E.xpm
 
 F 220,100,0
 C 0,0,0

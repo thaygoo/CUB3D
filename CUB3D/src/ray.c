@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:04:35 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/11 19:11:53 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 15:46:53 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,51 +203,51 @@ int lineHeight - compute wall height (simple version)
 
 int start, end center the wall vertically
 */
-// void draw_3d_slice(t_data *data, t_ray *ray, int i, int numRays)
-// {
-// 	// int viewWidth = WIDTH / 2;
-// 	int viewWidth = WIDTH / 2;
-// 	float sliceWidth = (float)viewWidth / numRays;
+void draw_3d_slice(t_data *data, t_ray *ray, int i, int numRays)
+{
+	// int viewWidth = WIDTH / 2;
+	int viewWidth = WIDTH / 2;
+	float sliceWidth = (float)viewWidth / numRays;
 
-// 	int screenX = (int)(i * sliceWidth) + viewWidth;
-// 	// int screenX = (int)(i * sliceWidth) + 0;
+	int screenX = (int)(i * sliceWidth) + viewWidth;
+	// int screenX = (int)(i * sliceWidth) + 0;
 
-// 	// int lineHeight = (int)(HEIGHT / ray->dist);  //fisheyed
-// 	float correctedDist = ray->dist * cos(ray->angle - data->p.angle);
-// 	int lineHeight = (int)(HEIGHT / correctedDist);
+	// int lineHeight = (int)(HEIGHT / ray->dist);  //fisheyed
+	float correctedDist = ray->dist * cos(ray->angle - data->p.angle);
+	int lineHeight = (int)(HEIGHT / correctedDist);
 
 
 
-// 	int start = (HEIGHT / 2) - (lineHeight / 2);
-// 	int end   = (HEIGHT / 2) + (lineHeight / 2);
+	int start = (HEIGHT / 2) - (lineHeight / 2);
+	int end   = (HEIGHT / 2) + (lineHeight / 2);
 
-// 	if (start < 0) start = 0;
-// 	if (end >= HEIGHT) end = HEIGHT - 1;
+	if (start < 0) start = 0;
+	if (end >= HEIGHT) end = HEIGHT - 1;
 
-// 	int ceilColor = (data->map.ceiling_color[0] << 16)
-// 				  | (data->map.ceiling_color[1] << 8)
-// 				  |  data->map.ceiling_color[2];
+	int ceilColor = (data->map.ceiling_color[0] << 16)
+				  | (data->map.ceiling_color[1] << 8)
+				  |  data->map.ceiling_color[2];
 
-// 	int floorColor = (data->map.floor_color[0] << 16)
-// 				   | (data->map.floor_color[1] << 8)
-// 				   |  data->map.floor_color[2];
+	int floorColor = (data->map.floor_color[0] << 16)
+				   | (data->map.floor_color[1] << 8)
+				   |  data->map.floor_color[2];
 
-// 	for (int y = 0; y < start; y++)
-// 		for (int w = 0; w < sliceWidth; w++)
-// 			put_pixel(data, screenX + w, y, ceilColor);
+	for (int y = 0; y < start; y++)
+		for (int w = 0; w < sliceWidth; w++)
+			put_pixel(data, screenX + w, y, ceilColor);
 
-// 	int wallBright = 0xFFFFFF;
-// 	int wallDark   = 0xAAAAAA;
-// 	int wallColor  = (ray->side == 0) ? wallBright : wallDark;
+	int wallBright = 0xFFFFFF;
+	int wallDark   = 0xAAAAAA;
+	int wallColor  = (ray->side == 0) ? wallBright : wallDark;
 
-// 	for (int y = start; y < end; y++)
-// 		for (int w = 0; w < sliceWidth; w++)
-// 			put_pixel(data, screenX + w, y, wallColor);
+	for (int y = start; y < end; y++)
+		for (int w = 0; w < sliceWidth; w++)
+			put_pixel(data, screenX + w, y, wallColor);
 
-// 	for (int y = end; y < HEIGHT; y++)
-// 		for (int w = 0; w < sliceWidth; w++)
-// 			put_pixel(data, screenX + w, y, floorColor);
-// }
+	for (int y = end; y < HEIGHT; y++)
+		for (int w = 0; w < sliceWidth; w++)
+			put_pixel(data, screenX + w, y, floorColor);
+}
 
 void load_textures(t_data *data)
 {
@@ -285,8 +285,7 @@ void draw_3d_textures(t_data *data, t_ray *ray, int i, int numRays)
 	if (perpDist < 0.0001f)
 		perpDist = 0.0001f;
 	int lineHeight = (int)(HEIGHT / perpDist);
-
-
+	
 	int start = (HEIGHT / 2) - (lineHeight / 2);
 	int end   = (HEIGHT / 2) + (lineHeight / 2);
 
@@ -332,21 +331,18 @@ void draw_3d_textures(t_data *data, t_ray *ray, int i, int numRays)
 		(ray->side == 1 && ray->dy > 0))
 		texX = data->tex[tex_id].w - texX - 1;
 	
-
-
-
-
-	// draw textured wall
+	int texStart = 0;
+	if (lineHeight > HEIGHT)
+		texStart = (lineHeight - HEIGHT) / 2;
+	
+		// draw textured wall
 	for (int y = start; y < end; y++)
 	{
-		// int d = (y - start) * 256 - HEIGHT * 128 + lineHeight * 128;
-		int d = (y - start) * 256;
+		int d = (y - start + texStart) * 256;
 		int texY = ((d * data->tex[tex_id].h) / lineHeight) / 256;
 
-		//clamp
 		if (texY < 0) texY = 0;
 		if (texY >= data->tex[tex_id].h) texY = data->tex[tex_id].h - 1;
-
 
 		char *pixel = data->tex[tex_id].addr
 			+ texY * data->tex[tex_id].line_len
@@ -357,7 +353,6 @@ void draw_3d_textures(t_data *data, t_ray *ray, int i, int numRays)
 		for (int w = 0; w < sliceWidth; w++)
 			put_pixel(data, screenX + w, y, color);
 	}
-
 	// --- TEXTURED WALL ENDS HERE ---
 
 	// draw floor
@@ -365,9 +360,6 @@ void draw_3d_textures(t_data *data, t_ray *ray, int i, int numRays)
 		for (int w = 0; w < sliceWidth; w++)
 			put_pixel(data, screenX + w, y, floorColor);
 }
-
-
-
 
 void cast_rays(t_data *data)
 {

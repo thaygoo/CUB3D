@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/11 16:53:23 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 17:16:56 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "../src/libft/libft.h"
 # include "../src/minilibx-linux/mlx.h"
 
-# define WIDTH	1024
+# define WIDTH	512
 # define HEIGHT	512
 # define BLOCK	64
 
@@ -86,6 +86,7 @@ typedef struct s_ray
 	float	sideDistX;
 	float	sideDistY;
 	float	dist;
+	int		hit;
 	float	hitX;
 	float	hitY;
 	int		side;
@@ -101,7 +102,7 @@ typedef struct s_line
 	float	y_inc;
 } t_line;
 
-typedef enum e_tex_id
+typedef enum s_tex_id
 {
 	NORTH = 0,
 	SOUTH = 1,

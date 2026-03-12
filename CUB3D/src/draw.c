@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 17:59:01 by msochor           #+#    #+#             */
-/*   Updated: 2026/03/11 16:23:52 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 17:08:58 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,65 +22,6 @@ void	put_pixel(t_data *data, int x, int y, int color)
 	data->addr[index] = color & 0xFF;
 	data->addr[index + 1] = (color >> 8) & 0xFF;
 	data->addr[index + 2] = (color >> 16) & 0xFF;
-}
-
-void	draw_circle(t_data *data, int cx, int cy, int r)
-{
-	double	step;
-	double	angle;
-	int		x;
-	int		y;
-	int		color;
-
-	step = 0.01;
-	angle = 0;
-	color = 0x00FF00;
-	while (angle < 2 * PI)
-	{
-		x = cx + (int)(r * cos(angle));
-		y = cy + (int)(r * sin(angle));
-		put_pixel(data, x, y, color);
-		angle += step;
-	}
-}
-
-void	draw_square(t_data *data, int x, int y, int size)
-{
-	int	i;
-	int	color;
-
-	color = 0xFFFFFF;
-	i = 0;
-	while (i < size)
-	{
-		put_pixel(data, x + i, y, color);
-		put_pixel(data, x, y + i, color);
-		put_pixel(data, x + i, y + size, color);
-		put_pixel(data, x + size, y + i, color);
-		i++;
-	}
-}
-
-void	draw_map(t_data *data)
-{
-	char	**grid;
-	int		x;
-	int		y;
-
-	grid = data->map.grid;
-	y = 0;
-	while (grid[y])
-	{
-		x = 0;
-		while (grid[y][x])
-		{
-			if (grid[y][x] == '1')
-				draw_square(data, x * BLOCK, y * BLOCK, BLOCK);
-				// draw_square(data, x * WIDTH / 2 / data->map.width, y * HEIGHT / 2 / data->map.height, WIDTH / 2 / data->map.width);
-			x++;
-		}
-		y++;
-	}
 }
 
 bool	touch(float px, float py, t_data *data)
@@ -108,31 +49,6 @@ bool	touch(float px, float py, t_data *data)
 	return (false);
 }
 
-// void	draw_line(t_data *data, float x0, float y0,
-//  float x1, float y1, int color)
-// {
-// 	float dx = x1 - x0;
-// 	float dy = y1 - y0;
-
-// 	float steps = fabs(dx) > fabs(dy) ? fabs(dx) : fabs(dy);
-
-// 	float x_inc = dx / steps;
-// 	float y_inc = dy / steps;
-
-// 	float x = x0;
-// 	float y = y0;
-
-// 	int	i;
-// 	i = 0;
-// 	while (i <= steps)
-// 	{
-// 		put_pixel(data, (int)x, (int)y, color);
-// 		x += x_inc;
-// 		y += y_inc;
-// 		i++;
-// 	}
-// }
-
 void	draw_ray_line(t_data *data, float x1, float y1, int color)
 {
 	t_line	l;
@@ -159,3 +75,63 @@ void	draw_ray_line(t_data *data, float x1, float y1, int color)
 		i++;
 	}
 }
+
+// CODE USED FOR 2d RAYS CASTING/DEBUG
+
+// void	draw_circle(t_data *data, int cx, int cy, int r)
+// {
+// 	double	step;
+// 	double	angle;
+// 	int		x;
+// 	int		y;
+// 	int		color;
+
+// 	step = 0.01;
+// 	angle = 0;
+// 	color = 0x00FF00;
+// 	while (angle < 2 * PI)
+// 	{
+// 		x = cx + (int)(r * cos(angle));
+// 		y = cy + (int)(r * sin(angle));
+// 		put_pixel(data, x, y, color);
+// 		angle += step;
+// 	}
+// }
+
+// void	draw_square(t_data *data, int x, int y, int size)
+// {
+// 	int	i;
+// 	int	color;
+
+// 	color = 0xFFFFFF;
+// 	i = 0;
+// 	while (i < size)
+// 	{
+// 		put_pixel(data, x + i, y, color);
+// 		put_pixel(data, x, y + i, color);
+// 		put_pixel(data, x + i, y + size, color);
+// 		put_pixel(data, x + size, y + i, color);
+// 		i++;
+// 	}
+// }
+
+// void	draw_map(t_data *data)
+// {
+// 	char	**grid;
+// 	int		x;
+// 	int		y;
+
+// 	grid = data->map.grid;
+// 	y = 0;
+// 	while (grid[y])
+// 	{
+// 		x = 0;
+// 		while (grid[y][x])
+// 		{
+// 			if (grid[y][x] == '1')
+// 				draw_square(data, x * BLOCK, y * BLOCK, BLOCK);
+// 			x++;
+// 		}
+// 		y++;
+// 	}
+// }

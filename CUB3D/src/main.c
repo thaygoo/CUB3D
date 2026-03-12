@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:56:55 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/11 17:37:55 by msochor          ###   ########.fr       */
+/*   Updated: 2026/03/12 17:04:23 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,6 @@ void	init_data(t_data *data)
 	data->map.player_x = -1;
 	data->map.player_y = -1;
 	data->map.player_dir = '\0';
-}
-
-void	init_game(t_data *data)
-{
-	data->mlx_ptr = mlx_init();
-	data->win_ptr = mlx_new_window(data->mlx_ptr, WIDTH, HEIGHT, "cub3d");
-	data->img_ptr = mlx_new_image(data->mlx_ptr, WIDTH, HEIGHT);
-	// data->addr = mlx_get_data_addr(data->img_ptr, &data->bit_per_pixel,
-	// 		&data->size_line, &data->endian);
-	// init_player(data);
 }
 
 void	init_player(t_data *data)
@@ -70,6 +60,17 @@ void	init_player(t_data *data)
 		data->p.angle = PI;
 }
 
+void	init_game(t_data *data)
+{
+	data->mlx_ptr = mlx_init();
+	data->win_ptr = mlx_new_window(data->mlx_ptr, WIDTH, HEIGHT, "cub3d");
+	data->img_ptr = mlx_new_image(data->mlx_ptr, WIDTH, HEIGHT);
+	init_player(data);
+	load_textures(data);
+}
+
+
+
 // void clear_image(t_data *data)
 // {
 // 	ft_memset(data->addr, 0, HEIGHT * data->size_line);
@@ -82,10 +83,9 @@ int	draw_loop(t_data *data)
 	data->addr = mlx_get_data_addr(data->img_ptr, &data->bit_per_pixel,
 			&data->size_line, &data->endian);
 	// clear_image(data);
-	draw_map(data);
-	draw_circle(data, data->p.x, data->p.y, data->p.radius);
+	// draw_map(data);
+	// draw_circle(data, data->p.x, data->p.y, data->p.radius);
 	move_player(data);
-	// cast_ray(data, data->p.angle);
 	cast_rays(data);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
 	return (0);
@@ -103,14 +103,9 @@ int	main(int argc, char **argv)
 	printf("Success: Map loaded\n");
 	
 	init_game(&data);
-	load_textures(&data);
-	// printf("player position: %d %d\n", data.map.player_x, data.map.player_y);
-	// printf("player dir: %c\n", data.map.player_dir);
-	init_player(&data);
 	mlx_hook(data.win_ptr, 2, 1L << 0, key_press, &data);
 	mlx_hook(data.win_ptr, 3, 1L << 1, key_release, &data);
 	mlx_loop_hook(data.mlx_ptr, draw_loop, &data);
-	// mlx_put_image_to_window(data.mlx_ptr, data.win_ptr, data.img_ptr, 0, 0);
 	mlx_loop(data.mlx_ptr);
 	return (0);
 }

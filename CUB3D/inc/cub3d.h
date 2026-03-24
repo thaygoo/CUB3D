@@ -112,7 +112,7 @@ typedef struct s_tex
 	int		endian;
 }	t_tex;
 
-typedef struct	s_texture_sample
+typedef struct s_texture_sample
 {
 	float	slice_width;
 	int		screen_x;
@@ -161,6 +161,7 @@ int		is_whitespace(char c);
 void	put_pixel(t_data *data, int x, int y, int color);
 bool	touch(float px, float py, t_data *data);
 void	cast_rays(t_data *data);
+void	draw_3d_textures(t_data *data, t_ray *ray, int i, int num_rays);
 void	load_textures(t_data *data);
 
 int		key_press(int keycode, t_data *data);

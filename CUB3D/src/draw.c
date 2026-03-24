@@ -39,7 +39,8 @@ bool	touch(float px, float py, t_data *data)
 		x = data->p.left;
 		while (x <= data->p.right)
 		{
-			if (y < 0 || y >= data->map.height || x < 0 || x >= data->map.width
+			if (y < 0 || y >= data->map.height
+				|| x < 0 || x >= data->map.width
 				|| data->map.grid[y][x] == '1')
 				return (true);
 			x++;

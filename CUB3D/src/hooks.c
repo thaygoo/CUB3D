@@ -12,8 +12,35 @@
 
 #include "../inc/cub3d.h"
 
+int	close_program(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < 4)
+	{
+		if (data->tex[i].img)
+			mlx_destroy_image(data->mlx_ptr, data->tex[i].img);
+		i++;
+	}
+	if (data->img_ptr)
+		mlx_destroy_image(data->mlx_ptr, data->img_ptr);
+	if (data->win_ptr)
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	if (data->mlx_ptr)
+	{
+		mlx_destroy_display(data->mlx_ptr);
+		free(data->mlx_ptr);
+	}
+	free_data(data);
+	exit(0);
+	return (0);
+}
+
 int	key_press(int keycode, t_data *data)
 {
+	if (keycode == 65307)
+		close_program(data);
 	if (keycode == W)
 		data->p.key_w = true;
 	if (keycode == A)
@@ -45,109 +72,3 @@ int	key_release(int keycode, t_data *data)
 		data->p.key_right = false;
 	return (0);
 }
-
-// int	key_press_debug(int keycode, t_data *data)
-// {
-// 	if (keycode == W)
-// 	{
-// 		data->p.key_W = true;
-// 		printf("W pressed\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == A)
-// 	{
-// 		data->p.key_A = true;
-// 		printf("A pressed\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == S)
-// 	{
-// 		data->p.key_S = true;
-// 		printf("S pressed\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == D)
-// 	{
-// 		data->p.key_D = true;
-// 		printf("D pressed\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == LEFT)
-// 	{
-// 		data->p.key_left = true;
-// 		printf("LEFT pressed\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == RIGHT)
-// 	{
-// 		data->p.key_right = true;
-// 		printf("LEFT pressed\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	return (0);
-// }
-
-// int	key_release_debug(int keycode, t_data *data)
-// {
-// 	if (keycode == W)
-// 	{
-// 		data->p.key_W = false;
-// 		printf("W released\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == A)
-// 	{
-// 		data->p.key_A = false;
-// 		printf("A released\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == S)
-// 	{
-// 		data->p.key_S = false;
-// 		printf("S released\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == D)
-// 	{
-// 		data->p.key_D = false;
-// 		printf("D released\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == LEFT)
-// 	{
-// 		data->p.key_left = false;
-// 		printf("LEFT released\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	if (keycode == RIGHT)
-// 	{
-// 		data->p.key_right = false;
-// 		printf("LEFT released\n");
-// 		printf("p x: %f\n", data->p.x);
-// 		printf("p y: %f\n", data->p.y);
-// 		printf("p ANGLE: %f\n", data->p.angle);
-// 	}
-// 	return (0);
-// }

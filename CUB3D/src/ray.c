@@ -120,18 +120,6 @@ void	ray_hitlookup(t_ray *r, t_data *data)
 	r->hity = data->p.y + r->dy * r->dist * BLOCK;
 }
 
-// // cast rays in 2d debug area
-// void	draw_2d_ray(t_ray *ray, t_data *data, int color)
-// {
-// 	if (ray->side == 0)
-// 		ray->dist = ray->side_dist_x - ray->delta_dist_x;
-// 	else
-// 		ray->dist = ray->side_dist_y - ray->delta_dist_y;
-// 	ray->hitx = data->p.x + ray->dx * ray->dist * BLOCK;
-// 	ray->hity = data->p.y + ray->dy * ray->dist * BLOCK;
-// 	draw_ray_line(data, ray->hitx, ray->hity, color);
-// }
-
 void	load_textures(t_data *data)
 {
 	data->tex[NORTH].img = mlx_xpm_file_to_image(
@@ -181,7 +169,6 @@ void	draw_3d_setup(t_data *data, t_ray *ray, t_texture_sample *t)
 	t->line_height = (int)(HEIGHT / t->perp_dist);
 	t->start = (HEIGHT / 2) - (t->line_height / 2);
 	t->end = (HEIGHT / 2) + (t->line_height / 2);
-	// clamping to not going out of bounds
 	if (t->start < 0)
 		t->start = 0;
 	if (t->end >= HEIGHT)
@@ -230,7 +217,6 @@ void	draw_3d_setup_two(t_data *data, t_ray *ray, t_texture_sample *t)
 		t->tex_start = (t->line_height - HEIGHT) / 2;
 }
 
-// draw ceiling
 void	draw_3d_ceiling(t_data *data, t_texture_sample *t)
 {
 	int	y;

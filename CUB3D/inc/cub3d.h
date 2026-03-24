@@ -93,15 +93,6 @@ typedef struct s_ray
 	float	angle;
 }	t_ray;
 
-typedef struct s_line
-{
-	float	dx;
-	float	dy;
-	float	steps;
-	float	x_inc;
-	float	y_inc;
-}	t_line;
-
 typedef enum s_tex_id
 {
 	NORTH	= 0,
@@ -168,20 +159,13 @@ void	free_split(char **split);
 int		is_whitespace(char c);
 
 void	put_pixel(t_data *data, int x, int y, int color);
-void	draw_circle(t_data *data, int cx, int cy, int r);
-void	draw_square(t_data *data, int x, int y, int size);
-void	draw_map(t_data *data);
-void	draw_ray_line(t_data *data, float x1, float y1, int color);
 bool	touch(float px, float py, t_data *data);
-// void	cast_ray(t_data *data, float angle, int color);
-// void	cast_rays(t_data *data, int fov);
 void	cast_rays(t_data *data);
 void	load_textures(t_data *data);
 
 int		key_press(int keycode, t_data *data);
 int		key_release(int keycode, t_data *data);
-int		key_press_debug(int keycode, t_data *data);
-int		key_release_debug(int keycode, t_data *data);
+int		close_program(t_data *data);
 void	move_player(t_data *data);
 
 #endif

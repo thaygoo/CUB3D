@@ -1,3 +1,5 @@
+*This project has been created as part of the 42 curriculum by msochor and huburton*
+# cub3d
 ## Description
 
 cub3d is a simplified 3D rendering engine inspired by Wolfenstein 3D.
@@ -101,6 +103,7 @@ Sample texture rows (tex_y) using fixed‑point math
 Draw pixel‑accurate textured walls
 
 Ceiling and floor are filled with solid RGB colors.
+## Instructions
 
 ### Controls
 Key	Action
@@ -117,3 +120,6 @@ make
 
 #### Run
 ./cub3d map.cub
+
+## Resources
+

@@ -1,28 +1,38 @@
-## Description
+cub3d
+Description
 
 cub3d is a simplified 3D rendering engine inspired by Wolfenstein 3D.
-The goal of the project is to implement a ray‑casting renderer, handle player movement, collision detection, textured walls, and display a 3D scene using MiniLibX.
+It implements a ray‑casting renderer, player movement, collision detection, textured walls, and real‑time 3D projection using MiniLibX.
 
 The world is defined by a 2D map, and the engine projects it into a pseudo‑3D environment by casting rays from the player’s point of view.
 
 This implementation follows the mandatory requirements of the 42 subject and focuses on correctness, readability, and mathematical clarity.
+Features
 
-## Features
+    Parsing of .cub configuration file
 
-Parsing of .cub configuration file
-Loading of .xpm textures (NO, SO, WE, EA)
-RGB floor and ceiling colors
-Player spawn and orientation (N, S, E, W)
-Real‑time movement and rotation
-Collision detection using a radius
-Ray‑casting using the DDA algorithm
-Textured wall projection
-Ceiling and floor rendering
-60° FOV, 256 rays per frame
+    Loading of .xpm textures (NO, SO, WE, EA)
 
-## Map Format
+    RGB floor and ceiling colors
+
+    Player spawn and orientation (N, S, E, W)
+
+    Real‑time movement and rotation
+
+    Collision detection using a radius
+
+    Ray‑casting using the DDA algorithm
+
+    Textured wall projection
+
+    Ceiling and floor rendering
+
+    60° FOV, 256 rays per frame
+
+Map Format
 
 A valid .cub file contains:
+Code
 
 NO ./textures/north.xpm
 SO ./textures/south.xpm
@@ -32,73 +42,89 @@ EA ./textures/east.xpm
 F 220,100,0
 C 225,30,0
 
+Example map:
+Code
+
 111111
 1000N1
 100001
 111111
 
-### Map rules:
-Must be closed by walls
-Only one player start position
-Allowed characters: 0, 1, N, S, E, W
+Map Rules
 
+    Must be fully enclosed by walls (1)
 
-## Technical Overview
-### 1. Player
+    Only one player start position
+
+    Allowed characters: 0, 1, N, S, E, W
+
+Technical Overview
+1. Player
 
 The player is defined by:
-Position (x, y) in pixel space
-Angle in radians
-Movement flags (W/A/S/D, LEFT/RIGHT)
-Collision radius
+
+    Position (x, y) in pixel space
+
+    Angle in radians
+
+    Movement flags (W/A/S/D, LEFT/RIGHT)
+
+    Collision radius
 
 Movement uses trigonometric vectors:
-Forward/back: cos(angle), sin(angle)
-Strafe: perpendicular vectors
+
+    Forward/back: cos(angle), sin(angle)
+
+    Strafe: perpendicular vectors
 
 Collision is checked by sampling the map grid around the player’s radius.
-
-### 2. Ray‑Casting (DDA)
+2. Ray‑Casting (DDA)
 
 For each frame, the engine casts 256 rays across a 60° FOV.
 
 Each ray computes:
 
-Direction vector
-Step direction (±1)
-Delta distances
-Initial side distances
-Grid traversal until a wall is hit
+    Direction vector
+
+    Step direction (±1)
+
+    Delta distances
+
+    Initial side distances
+
+    Grid traversal until a wall is hit
 
 The DDA loop:
+Code
 
 if (side_dist_x < side_dist_y)
     step in x direction
 else
     step in y direction
 
-When a wall is hit, the perpendicular distance is computed and corrected to avoid fisheye.
-
-### 3. Projection
+When a wall is hit, the perpendicular distance is computed and corrected to avoid fisheye distortion.
+3. Projection
 
 Wall height is computed using:
-
-line_height = HEIGHT / perpendicular_distance
+line_height=HEIGHTperpendicular_distance
 
 The slice is centered vertically and clamped to screen bounds.
-
-### 4. Texture Mapping
+4. Texture Mapping
 
 For each vertical slice:
-Determine which texture to use (N/S/E/W)
-Compute hit position on the wall
-Convert to texture coordinate tex_x
-Sample texture rows (tex_y) using fixed‑point math
-Draw pixel‑accurate textured walls
+
+    Determine which texture to use (N/S/E/W)
+
+    Compute hit position on the wall
+
+    Convert to texture coordinate tex_x
+
+    Sample texture rows (tex_y) using fixed‑point math
+
+    Draw pixel‑accurate textured walls
 
 Ceiling and floor are filled with solid RGB colors.
-
-## Controls
+Controls
 Key	Action
 W	Move forward
 S	Move backward
@@ -106,11 +132,13 @@ A	Strafe left
 D	Strafe right
 ←	Rotate left
 →	Rotate right
+Compilation & Execution
+Build
+Code
 
-## Compilation & Execution
-### Build
 make
 
-### Run
-./cub3d map.cub
+Run
+Code
 
+./cub3d map.cub

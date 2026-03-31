@@ -11,16 +11,16 @@ This implementation follows the mandatory requirements of the 42 subject and foc
 
 ### Features
 
-Parsing of .cub configuration file
-Loading of .xpm textures (NO, SO, WE, EA)
-RGB floor and ceiling colors
-Player spawn and orientation (N, S, E, W)
-Real‑time movement and rotation
-Collision detection using a radius
-Ray‑casting using the DDA algorithm
-Textured wall projection
-Ceiling and floor rendering    
-60° FOV, 256 rays per frame
+* Parsing of .cub configuration file
+* Loading of .xpm textures (NO, SO, WE, EA)
+* RGB floor and ceiling colors
+* Player spawn and orientation (N, S, E, W)
+* Real‑time movement and rotation
+* Collision detection using a radius
+* Ray‑casting using the DDA algorithm
+* Textured wall projection
+* Ceiling and floor rendering    
+* 60° FOV, 256 rays per frame
 
 ### Map Format
 

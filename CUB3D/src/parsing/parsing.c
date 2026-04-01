@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: huburton <huburton@student.s19.fr>         +#+  +:+       +#+        */
+/*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:09 by huburton          #+#    #+#             */
-/*   Updated: 2026/02/23 15:43:09 by huburton         ###   ########.fr       */
+/*   Updated: 2026/04/01 18:19:57 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,29 @@ static int	check_parse_step(int result, void *lines_ptr, char *err_msg)
 	return (0);
 }
 
+int	check_texture_files(t_data *data)
+{
+	int	fd;
+
+	fd = open (data->map.no_texture, O_RDONLY);
+	if (fd == -1)
+		return (1);
+	close(fd);
+	fd = open (data->map.so_texture, O_RDONLY);
+	if (fd == -1)
+		return (1);
+	close(fd);
+	fd = open (data->map.we_texture, O_RDONLY);
+	if (fd == -1)
+		return (1);
+	close(fd);
+	fd = open (data->map.ea_texture, O_RDONLY);
+	if (fd == -1)
+		return (1);
+	close(fd);
+	return (0);
+}
+
 int	parse_map(char *filename, t_data *data)
 {
 	char	**lines;
@@ -72,13 +95,16 @@ int	parse_map(char *filename, t_data *data)
 	}
 	if (check_parse_step(extract_elements(lines, data, &map_start_idx),
 			lines, "Invalid elements in map file"))
-		return (1);
+		return (free_texture_names(data), 1);
+	if (check_parse_step(check_texture_files(data),
+			lines, "Cannot read texture file(s)"))
+		return (free_texture_names(data), 1);
 	if (check_parse_step(extract_grid(lines, data, map_start_idx),
 			lines, "Invalid map grid"))
-		return (1);
+		return (free_texture_names(data), 1);
 	if (check_parse_step(validate_map(data),
 			lines, "Map is not closed or invalid"))
-		return (1);
+		return (free_texture_names(data), 1);
 	free_split(lines);
 	return (0);
 }

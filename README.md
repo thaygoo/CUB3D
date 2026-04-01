@@ -1,4 +1,5 @@
 *This project has been created as part of the 42 curriculum by msochor and huburton*
+
 # cub3d
 ## Description
 
@@ -13,14 +14,13 @@ This implementation follows the mandatory requirements of the 42 subject and foc
 
 * Parsing of .cub configuration file
 * Loading of .xpm textures (NO, SO, WE, EA)
-* RGB floor and ceiling colors
 * Player spawn and orientation (N, S, E, W)
-* Real‑time movement and rotation
-* Collision detection using a radius
+* Real‑time movement and rotation using keyboard
+* Collision detection using a radius around player
 * Ray‑casting using the DDA algorithm
 * Textured wall projection
 * Ceiling and floor rendering    
-* 60° FOV, 256 rays per frame
+* 60° FOV
 
 ### Map Format
 
@@ -56,16 +56,11 @@ Angle in radians
 Movement flags (W/A/S/D, LEFT/RIGHT)
 Collision radius
 ```
-Movement uses trigonometric vectors:
-```
-Forward/back: cos(angle), sin(angle)
-Strafe: perpendicular vectors
-```
-Collision is checked by sampling the map grid around the player’s radius.
+Wall collision is checked by sampling the map grid around the player’s radius.
 
 #### 2. Ray‑Casting (DDA)
 
-For each frame, the engine casts 256 rays across a 60° FOV.
+For each frame, the engine casts 256 (preset window width / 2)rays across a 60° FOV.
 
 Each ray computes:
 ```
@@ -75,20 +70,13 @@ Delta distances
 Initial side distances
 Grid traversal until a wall is hit
 ```
-The DDA loop:
-```
-if (side_dist_x < side_dist_y)
-    step in x direction
-else
-    step in y direction
-```
 When a wall is hit, the perpendicular distance is computed and corrected to avoid fisheye.
 
 #### 3. Projection
 
 Wall height is computed using:
 ```
-line_height = HEIGHT / perpendicular_distance
+line_height = HEIGHT(preset window height) / perpendicular_distance
 ```
 The slice is centered vertically and clamped to screen bounds.
 
@@ -103,6 +91,7 @@ Sample texture rows (tex_y) using fixed‑point math
 Draw pixel‑accurate textured walls
 ```
 Ceiling and floor are filled with solid RGB colors.
+
 ## Instructions
 
 ### Controls
@@ -118,12 +107,22 @@ D	Strafe right
 ```
 ### Compilation & Execution
 #### Build
+
+Run make in the cub3d subdirectory. 
 ```
 make
 ```
 #### Run
+Run the executable with map settings file as argument.
 ```
 ./cub3d map.cub
 ```
 ## Resources
 
+Great tutorial for raycasting:
+https://lodev.org/cgtutor/raycasting.html
+
+Nice video explaing raycasting:
+https://www.youtube.com/watch?v=g8p7nAbDz6Y
+
+AI was used for better understanding of math formulas used for the raycasting.

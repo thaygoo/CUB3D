@@ -6,7 +6,7 @@
 /*   By: msochor <msochor@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:43:41 by huburton          #+#    #+#             */
-/*   Updated: 2026/03/12 20:53:29 by msochor          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:13:28 by msochor          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,7 @@ int		find_player(t_data *data);
 void	free_data(t_data *data);
 void	free_split(char **split);
 int		is_whitespace(char c);
+void	free_texture_names(t_data *data);
 
 void	put_pixel(t_data *data, int x, int y, int color);
 bool	touch(float px, float py, t_data *data);

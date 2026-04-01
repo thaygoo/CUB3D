@@ -8,7 +8,7 @@ The goal of the project is to implement a ray‑casting renderer, handle player 
 
 The world is defined by a 2D map, and the engine projects it into a pseudo‑3D environment by casting rays from the player’s point of view.
 
-This implementation follows the mandatory requirements of the 42 subject and focuses on correctness, readability, and mathematical clarity.
+This implementation follows the mandatory requirements of the 42 subject.
 
 ### Features
 
